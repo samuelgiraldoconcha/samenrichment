@@ -35,9 +35,9 @@ for index, row in df.iterrows():
     try:
         element = driver.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
         # Print the URL of the first result
-        print(f"Results for query '{query}': {element.get_attribute('href')}")
+        print(f"{query}, {element.get_attribute('href')}")
     except Exception as e:
-        print(f"Error fetching results for query '{query}': {e}")
+        print(f"Error fetching results for query '{query}' {e}")
 
 # Close the driver
 driver.quit()
