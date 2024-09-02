@@ -14,7 +14,7 @@ chrome_options.add_argument(f"user-agent={user_agent}")
 driver = webdriver.Chrome(options=chrome_options)
 
 # Load the CSV file
-csv_file_path = 'LinkedInProfilesScrapeTest.csv'  # Change this to the path of your CSV file
+csv_file_path = 'template.csv'  # Change this to the path of your CSV file
 df = pd.read_csv(csv_file_path)
 
 # List to store results
