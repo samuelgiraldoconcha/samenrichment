@@ -2,6 +2,7 @@ You will need to install selenium and pandas running this commands in the termin
 - pip install selenium
 - pip install pandas
 
+###To run the script:
 1. Downlaod the repository.
 2. Download the csv file with the founders keywords list (usually I download it from the residual sheet of the fundraising CRM). You can see the format in the file `template.csv`.
 3. Place the name of the file in the variable: `csv_file_path = 'template.csv'`.
