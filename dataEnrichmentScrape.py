@@ -14,8 +14,11 @@ chrome_options.add_argument(f"user-agent={user_agent}")
 driver = webdriver.Chrome(options=chrome_options)
 
 # Load the CSV file
-csv_file_path = 'template.csv'  # Change this to the path of your CSV file
+csv_file_path = 'Hustle fund.csv'  # Change this to the path of your CSV file
 df = pd.read_csv(csv_file_path)
+
+# Replace NaN with empty strings
+df.fillna('', inplace=True)
 
 # List to store results
 results = []
@@ -25,7 +28,7 @@ for index, row in df.iterrows():
     # Construct query using 'Startup' and 'Firstname'
     startup = row['Startup']
     founder_first_name = row['Firstname']
-    query = f"{startup} {founder_first_name}, founder, linkedin"
+    query = f"{startup}, {founder_first_name}, founder, linkedin"
     
     # Encode the query for the URL
     search_query = '+'.join(query.split())
@@ -50,6 +53,12 @@ for index, row in df.iterrows():
             'URL': f"Error fetching result: {e}"
         })
         print(f"Error fetching results for query '{query}': {e}")
+        # Convert results to a DataFrame
+        results_df = pd.DataFrame(results)
+
+# Save the results to a CSV file
+        output_csv_file_path = 'search_results.csv'  # Change this to your desired output file path
+        results_df.to_csv(output_csv_file_path, index=False)
         
     # Append results with each keyword and URL
     results.append({
