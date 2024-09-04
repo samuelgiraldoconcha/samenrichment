@@ -14,7 +14,7 @@ chrome_options.add_argument(f"user-agent={user_agent}")
 driver = webdriver.Chrome(options=chrome_options)
 
 # Load the CSV file
-csv_file_path = 'Hustle fund.csv'  # Change this to the path of your CSV file
+csv_file_path = 'Residual September 3.csv'  # Change this to the path of your CSV file
 df = pd.read_csv(csv_file_path)
 
 # Replace NaN with empty strings
