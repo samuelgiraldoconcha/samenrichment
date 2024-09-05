@@ -24,8 +24,8 @@ df.fillna('', inplace=True)
 # List to store results
 results = []
 
-# Iterate over each row in the DataFrame. 
-Utils.linkedInProdileEnrichment(df, results, driver)
+# Iterate over each row in the DataFrame
+Utils.Enrichment(df, results, driver)
 
 # Convert results to a DataFrame
 results_df = pd.DataFrame(results)
