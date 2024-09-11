@@ -4,9 +4,34 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import pandas as pd
 import time
+import subprocess
+
+def play_alert_sound():
+    # AppleScript command to play a built-in macOS sound
+    apple_script = '''
+    tell application "Finder"
+        set soundFile to ("/System/Library/Sounds/Glass.aiff" as POSIX file as alias)
+        open soundFile
+    end tell
+    '''
+    subprocess.run(['osascript', '-e', apple_script])
+
+def flash_screen_alert():
+    # AppleScript command to flash the screen
+    apple_script = '''
+    tell application "System Events"
+        set myAlert to make new window
+        tell myAlert
+            set its bounds to {0, 0, 1440, 900}
+            set its background color to {255, 0, 0}
+        end tell
+        delay 1
+        close myAlert
+    end tell
+    '''
+    subprocess.run(['osascript', '-e', apple_script])
 
 def Enrichment(file, output, driverp):
-
     # Iterate over each row in the DataFrame
     for index, row in file.iterrows():
         # Construct queries using 'Startup' and 'Firstname' and industry
@@ -33,6 +58,15 @@ def Enrichment(file, output, driverp):
             # Wait for the dynamic content to load (you might need to adjust the sleep time)
             time.sleep(3)
             
+# Check for reCAPTCHA
+            if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
+                play_alert_sound()
+                flash_screen_alert()
+                print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
+                input("Press Enter after completing the CAPTCHA...")
+                driverp.refresh()
+                time.sleep(5)  # Wait for the page to reload
+
             # Find the first result link
             try:
                 element = driverp.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
@@ -53,7 +87,7 @@ def Enrichment(file, output, driverp):
                 # Save the results to a CSV file
                 output_csv_file_path = 'search_results.csv'  # Change this to your desired output file path
                 results_df.to_csv(output_csv_file_path, index=False)
-            
+
         # Append results with each keyword and URL
         output.append({
             'Startup': startup,
