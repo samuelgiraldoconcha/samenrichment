@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 import pandas as pd
 import time
 import Utils
+import Utils_fundingStage
+import Only_crunchbase
 
 # Set up Chrome options
 chrome_options = Options()
@@ -25,7 +27,7 @@ df.fillna('', inplace=True)
 results = []
 
 # Iterate over each row in the DataFrame
-Utils.Enrichment(df, results, driver)
+Utils_fundingStage.Enrichment(df, results, driver)
 
 # Convert results to a DataFrame
 results_df = pd.DataFrame(results)

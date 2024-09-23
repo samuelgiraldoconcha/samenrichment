@@ -17,4 +17,4 @@ def prevent_sleep(duration):
         print("Resuming normal sleep mode.")
 
 # Keep the Mac awake for 1 hour (3600 seconds)
-prevent_sleep(3600)
+prevent_sleep(21600)
