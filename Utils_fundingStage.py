@@ -25,17 +25,19 @@ def save_results_periodically(output, last_save_time, save_interval, output_csv_
         return current_time  # Update last_save_time
     return last_save_time  # No save, return the old last_save_time
 
-def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv', save_interval=10):
-    last_save_time = time.time()
-
+def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv', save_interval=10, Include = {
+    "LinkedIn": str,
+    "Website": str,
+    "Crunchbase": str
+    }):
     # Iterate over each row in the DataFrame
     for index, row in file.iterrows():
         startup = row['Startup']
         industry = row['Industry']
 
-        queryLinkedIn = f"{startup}, founder, linkedin"
+        queryLinkedIn = f"site:linkedin.com/in/ {startup}, founder"
         queryWebsite = f"{startup}, {industry}"
-        queryCrunchbase = f"{startup}, {industry}, Crunchbase"
+        queryCrunchbase = f"site:crunchbase.com, {startup}, {industry}"
 
         scrapeLinkedIn = [queryLinkedIn, ""]
         scrapeWebsite = [queryWebsite, ""]
@@ -96,6 +98,7 @@ def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv',
                 })
                 print(f"Error fetching results for query '{scrape[0]}': {e}")
 
+        #TODO: Manage different appends according to exclude/include.
         output.append({
             'Startup': startup,
             'LinkedIn': scrapeLinkedIn[1],
