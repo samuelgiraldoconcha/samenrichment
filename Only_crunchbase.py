@@ -5,6 +5,16 @@ from selenium.webdriver.common.by import By
 import pandas as pd
 import time
 import subprocess
+import pygame
+
+def play_alert_sound():
+    # Initialize Pygame mixer
+    pygame.mixer.init()
+    # Load the sound file
+    pygame.mixer.music.load('alert_sound.wav')  # Replace with the path to your sound file
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():  # Wait for sound to finish playing
+        pygame.time.Clock().tick(10)
 
 def save_results_periodically(output, last_save_time, save_interval, output_csv_file_path='search_results.csv'):
     current_time = time.time()
@@ -15,11 +25,6 @@ def save_results_periodically(output, last_save_time, save_interval, output_csv_
         return current_time  # Update last_save_time
     return last_save_time  # No save, return the old last_save_time
 
-def play_alert_sound():
-    # Path to the alert sound file
-    sound_file = 'alert_sound.wav'  # Replace with the path to your sound file
-    playsound(sound_file)
-
 def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv', save_interval=10):
     last_save_time = time.time()
 
@@ -28,8 +33,9 @@ def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv',
         # Construct the Crunchbase query using 'Startup' and 'Industry'
         startup = row['Startup']
         industry = row['Industry']
+        website = row['Website']
 
-        queryCrunchbase = f"{startup}, {industry}, Crunchbase"
+        queryCrunchbase = f"{startup}, {industry}, {website}, Crunchbase"
         scrapeCrunchbase = [queryCrunchbase, ""]
 
         # Encode the query for the URL
@@ -44,7 +50,6 @@ def Enrichment(file, output, driverp, output_csv_file_path='search_results.csv',
         # Check for reCAPTCHA
         if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
             play_alert_sound()
-            flash_screen_alert()
             print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
             input("Press Enter after completing the CAPTCHA...")
             driverp.refresh()
