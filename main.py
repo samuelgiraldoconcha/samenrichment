@@ -4,9 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import pandas as pd
 import time
-import Utils
-import Utils_fundingStage
-import Only_crunchbase
+import utils
 
 # Set up Chrome options
 chrome_options = Options()
@@ -14,10 +12,10 @@ user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 chrome_options.add_argument(f"user-agent={user_agent}")
 
 print("Which columns do you want?")
-Include = {
-    "LinkedIn": input("Include LnkedIn results? (y or n)"),
-    "Website": input("Include Website results? (y or n)"),
-    "Crunchbase": input("Include Funding results? (y or n)")
+include = {
+    "LinkedIn": input("Include LnkedIn results? (y or n): "),
+    "Website": input("Include Website results? (y or n): "),
+    "Crunchbase": input("Include Funding results? (y or n): ")
     }
 
 # Initialize a new Selenium WebDriver session with options
@@ -33,8 +31,11 @@ df.fillna('', inplace=True)
 # List to store results
 results = []
 
-# Iterate over each row in the DataFrame
-Utils_fundingStage.Enrichment(df, results, driver, Include)
+if include["LinkedIn"] == "y" and include["Website"] == "y" and include["Crunchbase"] == "y":
+    utils.entire_enrichment(df, results, driver)
+
+elif include["LinkedIn"] == "n" and include["Website"] == "n" and include["Crunchbase"] == "y":
+    utils.crunchbase_enrichment(df, results, driver)
 
 # Convert results to a DataFrame
 results_df = pd.DataFrame(results)
@@ -43,7 +44,7 @@ results_df = pd.DataFrame(results)
 output_csv_file_path = 'search_results.csv'  # Change this to your desired output file path
 results_df.to_csv(output_csv_file_path, index=False)
 
-Utils_fundingStage.play_alert_sound()
+utils.play_alert_sound()
 
 # Close the driver
 driver.quit()
