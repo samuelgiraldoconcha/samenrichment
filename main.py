@@ -31,11 +31,7 @@ df.fillna('', inplace=True)
 # List to store results
 results = []
 
-if include["LinkedIn"] == "y" and include["Website"] == "y" and include["Crunchbase"] == "y":
-    utils.entire_enrichment(df, results, driver)
-
-elif include["LinkedIn"] == "n" and include["Website"] == "n" and include["Crunchbase"] == "y":
-    utils.crunchbase_enrichment(df, results, driver)
+utils.entire_enrichment(df, results, driver)
 
 # Convert results to a DataFrame
 results_df = pd.DataFrame(results)
