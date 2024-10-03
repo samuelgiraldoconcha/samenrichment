@@ -35,7 +35,7 @@ def entire_enrichment(file, output, driverp, output_csv_file_path='search_result
     for index, row in file.iterrows():
         startup = row['Startup']
         industry = row['Industry']
-
+        
         queryLinkedIn = f"site:linkedin.com/in/ {startup}, founder"
         queryWebsite = f"{startup}, {industry}"
         queryCrunchbase = f"site:crunchbase.com, {startup}, {industry}"
@@ -108,7 +108,7 @@ def scrape_crunchbase(driverp,scrape_link):
 
         # Now scrape the date for the latest funding stage (assuming it's near the funding stage in the HTML)
         if fund_signal:
-            date_element = driverp.find_element(By.CSS_SELECTOR, '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > div > obfuscation-cta > phrase-list-card:nth-child(1) > obfuscation > obfuscation-cta > markup-block > field-formatter:nth-child(12) > a')  # Replace with the actual CSS selector
+            date_element = driverp.find_element(By.CSS_SELECTOR, '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > div > obfuscation-cta > phrase-list-card:nth-child(1) > obfuscation > obfuscation-cta > markup-block > field-formatter:nth-child(12) > a')
             funding_date = date_element.text.strip()
             print(f"Date of latest funding: {funding_date}")
 

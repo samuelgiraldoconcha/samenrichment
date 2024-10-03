@@ -11,12 +11,15 @@ chrome_options = Options()
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 chrome_options.add_argument(f"user-agent={user_agent}")
 
+
+'''
 print("Which columns do you want?")
 include = {
     "LinkedIn": input("Include LnkedIn results? (y or n): "),
     "Website": input("Include Website results? (y or n): "),
     "Crunchbase": input("Include Funding results? (y or n): ")
     }
+'''
 
 # Initialize a new Selenium WebDriver session with options
 driver = webdriver.Chrome(options=chrome_options)
