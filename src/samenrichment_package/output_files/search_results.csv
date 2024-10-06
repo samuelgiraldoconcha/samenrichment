@@ -1,0 +1,46 @@
+Startup,LinkedIn,Website,Raised to Date,Date of latest funding,Query,URL
+Ocrolus,https://www.linkedin.com/in/sam-bobley,https://www.ocrolus.com/lending-automation/,Seed,"Sep 22, 2021",,
+,,,,,"site:linkedin.com/in/ Healchie, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x000000010072ea0c chromedriver + 4385292
+1   chromedriver                        0x0000000100727318 chromedriver + 4354840
+2   chromedriver                        0x0000000100344b0c chromedriver + 281356
+3   chromedriver                        0x00000001003872f8 chromedriver + 553720
+4   chromedriver                        0x00000001003bfd24 chromedriver + 785700
+5   chromedriver                        0x000000010037beec chromedriver + 507628
+6   chromedriver                        0x000000010037c8c4 chromedriver + 510148
+7   chromedriver                        0x00000001006f63c8 chromedriver + 4154312
+8   chromedriver                        0x00000001006fae2c chromedriver + 4173356
+9   chromedriver                        0x00000001006dbf84 chromedriver + 4046724
+10  chromedriver                        0x00000001006fb718 chromedriver + 4175640
+11  chromedriver                        0x00000001006cef44 chromedriver + 3993412
+12  chromedriver                        0x00000001007191a8 chromedriver + 4297128
+13  chromedriver                        0x0000000100719324 chromedriver + 4297508
+14  chromedriver                        0x0000000100726f10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+"
+,,,,,"site:crunchbase.com, Healchie, Digital Health Infrastructure","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x000000010072ea0c chromedriver + 4385292
+1   chromedriver                        0x0000000100727318 chromedriver + 4354840
+2   chromedriver                        0x0000000100344b0c chromedriver + 281356
+3   chromedriver                        0x00000001003872f8 chromedriver + 553720
+4   chromedriver                        0x00000001003bfd24 chromedriver + 785700
+5   chromedriver                        0x000000010037beec chromedriver + 507628
+6   chromedriver                        0x000000010037c8c4 chromedriver + 510148
+7   chromedriver                        0x00000001006f63c8 chromedriver + 4154312
+8   chromedriver                        0x00000001006fae2c chromedriver + 4173356
+9   chromedriver                        0x00000001006dbf84 chromedriver + 4046724
+10  chromedriver                        0x00000001006fb718 chromedriver + 4175640
+11  chromedriver                        0x00000001006cef44 chromedriver + 3993412
+12  chromedriver                        0x00000001007191a8 chromedriver + 4297128
+13  chromedriver                        0x0000000100719324 chromedriver + 4297508
+14  chromedriver                        0x0000000100726f10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+"
+Healchie,,http://healthit.uonbi.ac.ke/scaling_digital_health_infrastructure.html,Seed,"Sep 22, 2021",,
+Native Voice,https://www.linkedin.com/in/john-goscha-548000b,"https://play.google.com/store/apps/details?id=ai.nativevoice.app&hl=en#:~:text=About%20this%20app&text=The%20latest%20version%20of%20Native,the%20power%20of%20your%20voice.",,,,
