@@ -1,14 +1,24 @@
-You will need to install selenium and pandas.
+You will need to pip install:
+- Selenium
+- Pandas
+- Pygame
 
-### How I use this repository:
-1. I paste a list of startups in `template.csv`.
-2. I run main.py.
-3. I copy the results in a `search_results.csv` output file that I use to make the outreach the LinkedIn profiles of the founders of the startups. We ask them for intros to VCs.
-4. Sometimes I have to clean the output data using `clean_csv.py`.
+### How to use this repository:
+1. Paste a list of startups in `template.csv`.
+2. Run `python3 -m samenrichment_package.main`.
+3. Select option 'E' to start enrichment.
+4. If results in `output_files/search_results.csv` have noise, clean them byt running `python3 -m samenrichment_package.main` again, but selectin option 'C'.
+5. Copy clean results from `output_files/cleaned_search_results.csv`.
+6. Paste that info in the outreach spreadheet we use. 
 
-### Cases: 
-1. Whole info neeeded. Most of the times I need all the info I could get (LinkedIn profile of the founder, Website of the Startup and funding info from Crunchbase). In this case, I use `Utils_fundingStage.py` inside the `main.py`function.
-2. Just funding Info. In some cases, I only need the funding info, because the VC's portfolio page is actually great and they include Founders' names. In this case, I use `Only_crunchbase.py` inside the `main.py`function.
-3. Please don't bully me, I know there is a long way to not sucking. Bitch*.
+### TODOs: 
+1. Data models. We are creating an app in order to handle different enrichment cases. Models are going to be:
+- Prospects.
+- Enrichment_targets.
+- Scrapes.
 
-### Workflow: https://miro.com/app/board/uXjVKlbx8eY=/?shareablePresentation=1
+2. Frontend.
+
+Please don't bully me, I know there is a long way to not sucking. Bitch*.
+
+### This is a tool I use inside this whole workflow: https://miro.com/app/board/uXjVKlbx8eY=/?shareablePresentation=1
