@@ -17,7 +17,7 @@ def play_alert_sound():
     # Initialize Pygame mixer
     pygame.mixer.init()
     # Load the sound file
-    pygame.mixer.music.load('alert_sound.wav')  # Replace with the path to your sound file
+    pygame.mixer.music.load('samenrichment_package/utils/assets/alert_sound.wav')  # Replace with the path to your sound file
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():  # Wait for sound to finish playing
         pygame.time.Clock().tick(10)
@@ -66,3 +66,5 @@ def clean_csv(input_file: str, output_file: str):
     print("Cleaned CSV saved as 'cleaned_search_results.csv'.")
 
     return cleaned_df_csv
+
+

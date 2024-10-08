@@ -19,17 +19,18 @@ def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_int
     # Iterate over each row in the DataFrame
     for index, row in file.iterrows():
         startup = row['Startup']
-        industry = row['Industry']
+        description = row['Industry/description']
+        location = row['HQ Location']
         
-        queryLinkedIn = f"site:linkedin.com/in/ {startup}, founder"
-        queryWebsite = f"{startup}, {industry}"
-        queryCrunchbase = f"site:crunchbase.com, {startup}, {industry}"
+        queryLinkedIn = f"site:linkedin.com/in/ {startup}, {location}, founder"
+        queryWebsite = f"{startup}, {description}"
+        #queryCrunchbase = f"site:crunchbase.com, {startup}, {description}"
 
         scrapeLinkedIn = [queryLinkedIn, ""]
         scrapeWebsite = [queryWebsite, ""]
-        scrapeCrunchbase = [queryCrunchbase, ""]
+        #scrapeCrunchbase = [queryCrunchbase, ""]
 
-        scrapes = [scrapeLinkedIn, scrapeWebsite, scrapeCrunchbase]
+        scrapes = [scrapeLinkedIn, scrapeWebsite]
 
         for scrape in scrapes:
             search_query = '+'.join(scrape[0].split())
@@ -65,10 +66,8 @@ def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_int
             'Startup': startup,
             'LinkedIn': scrapeLinkedIn[1],
             'Website': scrapeWebsite[1],
-            'Raised to Date': funding_stage if funding_stage else '',
-            'Date of latest funding': funding_date if funding_date else ''
         })
-        print(f"{startup}, {industry}, LinkedIn, Website, Crunchbase: {scrapeLinkedIn[1]}, {scrapeWebsite[1]}, {scrapeCrunchbase[1]}")
+        print(f"{startup}, LinkedIn, Website")
 
         last_save_time = utils.save_results_periodically(output, last_save_time, save_interval, output_csv_file_path)
 
