@@ -28,10 +28,10 @@ class Enrichment(BaseModel):
     id: int
     date: str
     pool : str
-    #List of primary keys of enrichment targets
-    enrichment_targets_ids: list[Prospect] = []
-    #Dictionary[Primery key of prospect, dict[primary key of enrichment target, value scraped]]
-    enriched_data: dict[Prospect, dict[str,str]] = []
+    #Input of the scrape. TODO: Make it of Prosepect data type when Prospect model starts working. List of primary keys of enrichment targets. 
+    enrichment_targets_ids: list[str] = []
+    #Output of the scrape. TODO: Dictionary[Primery key of prospect, dict[primary key of enrichment target, value scraped]]
+    enriched_data: list[str] = []
 
 prospecto1 = Prospect(
     vc_firm = "LifeX",

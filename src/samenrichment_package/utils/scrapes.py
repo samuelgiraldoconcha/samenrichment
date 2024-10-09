@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import subprocess
 from . import utils
+from . import models
 
 # Iterate over each row in the DataFrame
 def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_interval=10):

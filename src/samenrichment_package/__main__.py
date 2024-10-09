@@ -28,6 +28,8 @@ operation_to_perform = input("\nOperation to perform: \n\nEnrichment (Press 'E')
 if operation_to_perform.lower() == "e":
     print(operation_to_perform)
     
+    
+
     # Set up Chrome options
     chrome_options = Options()
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -38,6 +40,14 @@ if operation_to_perform.lower() == "e":
 
     # Start scrape operation.
     scrapes.entire_enrichment(df, results, driver, output_csv_file_path)
+
+    # Clean the results automatically
+    cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
+    utils.clean_csv(output_csv_file_path, cleaned_file_path)
+    utils.play_alert_sound()
+
+    # Close the driver
+    driver.quit()
 
 # If the scrape gets interrupted, this options is useful for cleaning the results that the user got so far.
 elif operation_to_perform.lower() == "c":
@@ -51,11 +61,3 @@ elif operation_to_perform.lower() == "p":
 
 else:
     print("Invalid operation") 
-
-# Clean the results automatically
-cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
-utils.clean_csv(output_csv_file_path, cleaned_file_path)
-utils.play_alert_sound()
-
-# Close the driver
-driver.quit()
