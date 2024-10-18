@@ -6,7 +6,7 @@ import pandas as pd
 import time
 import subprocess
 from . import utils
-from . import models
+#from . import models
 
 # Iterate over each row in the DataFrame
 def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_interval=10):
@@ -21,17 +21,18 @@ def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_int
     for index, row in file.iterrows():
         startup = row['Startup']
         description = row['Industry/description']
-        location = row['HQ Location']
+        location = row['HQ Location (World)']
         
         queryLinkedIn = f"site:linkedin.com/in/ {startup}, {location}, founder"
-        queryWebsite = f"{startup}, {description}"
+        #queryWebsite = f"{startup}, {description}"
         #queryCrunchbase = f"site:crunchbase.com, {startup}, {description}"
 
         scrapeLinkedIn = [queryLinkedIn, ""]
-        scrapeWebsite = [queryWebsite, ""]
+        #scrapeWebsite = [queryWebsite, ""]
         #scrapeCrunchbase = [queryCrunchbase, ""]
 
-        scrapes = [scrapeLinkedIn, scrapeWebsite]
+        #scrapes = [scrapeLinkedIn, scrapeWebsite]
+        scrapes = [scrapeLinkedIn]
 
         for scrape in scrapes:
             search_query = '+'.join(scrape[0].split())
@@ -66,7 +67,6 @@ def entire_enrichment(file, output, driverp, output_csv_file_path: str, save_int
         output.append({
             'Startup': startup,
             'LinkedIn': scrapeLinkedIn[1],
-            'Website': scrapeWebsite[1],
         })
         print(f"{startup}, LinkedIn, Website")
 

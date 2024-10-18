@@ -1,1 +1,531 @@
-
+Query,URL,Startup,LinkedIn
+"site:linkedin.com/in/ Zevello, India, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Zevello,
+"site:linkedin.com/in/ Storypact, Austria, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Storypact,
+"site:linkedin.com/in/ Directo Tech, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Directo Tech,https://www.linkedin.com/in/nickmartindqt
+"site:linkedin.com/in/ Actiquest, United States, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Actiquest,
+"site:linkedin.com/in/ Prosit Medical Intelligence, Mexico, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Prosit Medical Intelligence,
+"site:linkedin.com/in/ Yaala Sparkling, Philippines, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Yaala Sparkling,https://au.linkedin.com/in/stephwithey
+"site:linkedin.com/in/ Sunrise, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Sunrise,https://www.linkedin.com/in/laurent-martinot-aa372a43
+"site:linkedin.com/in/ Nostal Homes, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Nostal Homes,https://www.linkedin.com/in/cem-polatoglu
+"site:linkedin.com/in/ Conducco, Brazil, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Conducco,https://br.linkedin.com/in/marcelodionisiof/en
+"site:linkedin.com/in/ 6S Pharma, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,6S Pharma,https://www.linkedin.com/in/ashok-illapakurthy-75b3b111
+"site:linkedin.com/in/ Binpong, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Binpong,https://www.linkedin.com/in/kenneth-bimpong-0856a7111
+"site:linkedin.com/in/ Mimrr, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Mimrr,https://www.linkedin.com/in/olaoludeji
+"site:linkedin.com/in/ RegenX, Singapore, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,RegenX,https://uk.linkedin.com/in/stephenjhong
+"site:linkedin.com/in/ Nexscient, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Nexscient,https://www.linkedin.com/in/fetannous
+"site:linkedin.com/in/ Derecho al Derecho, Colombia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Derecho al Derecho,https://co.linkedin.com/in/andresfrodriguezp/en
+"site:linkedin.com/in/ Briskpe, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Briskpe,https://in.linkedin.com/in/tripathysanjay
+"site:linkedin.com/in/ Bem, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Bem,https://www.linkedin.com/in/abmirayo
+"site:linkedin.com/in/ Juniper, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Juniper,https://uk.linkedin.com/in/ambrazhang
+"site:linkedin.com/in/ Lea, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Lea,https://www.linkedin.com/in/lea-rutherford-b37236123
+"site:linkedin.com/in/ Conduce Health, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Conduce Health,https://www.linkedin.com/in/eric-rosow
+"site:linkedin.com/in/ Qa.tech, Sweden, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Qa.tech,https://se.linkedin.com/in/danielmaunopettersson
+"site:linkedin.com/in/ Essence, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Essence,https://www.linkedin.com/in/essencepowell
+"site:linkedin.com/in/ Unblock, Lithuania, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Unblock,https://lt.linkedin.com/in/johannes-kolbeinsson-29415a3
+"site:linkedin.com/in/ Savoy Life, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Savoy Life,https://www.linkedin.com/in/petercemigh
+"site:linkedin.com/in/ Nanobots Therapeutics, Spain, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Nanobots Therapeutics,https://es.linkedin.com/in/samuel-s%C3%A1nchez-ord%C3%B3%C3%B1ez-86726770
+"site:linkedin.com/in/ Virtumeet Ai, India, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Virtumeet Ai,
+"site:linkedin.com/in/ Beagle, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Beagle,https://www.linkedin.com/in/sergey-demyanov
+"site:linkedin.com/in/ Aidora, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Aidora,https://www.linkedin.com/in/rhianagademsky
+"site:linkedin.com/in/ Zella AI, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Zella AI,https://in.linkedin.com/in/harshuljain
+"site:linkedin.com/in/ Colors-ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Colors-ai,https://www.linkedin.com/in/alonkichin
+"site:linkedin.com/in/ Figr, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Figr,https://in.linkedin.com/in/chiragsingla17
+"site:linkedin.com/in/ TabbyMl, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,TabbyMl,https://www.linkedin.com/in/lucygaolucy
+"site:linkedin.com/in/ Algorized, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Algorized,https://www.linkedin.com/in/erandz
+"site:linkedin.com/in/ Includ, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Includ,https://in.linkedin.com/in/shanti-raghavan
+"site:linkedin.com/in/ Cusman, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Cusman,https://www.linkedin.com/in/chris-cushman-999819124
+"site:linkedin.com/in/ Coolant, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Coolant,https://www.linkedin.com/in/michaeldwu
+"site:linkedin.com/in/ Synqly, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Synqly,https://www.linkedin.com/in/joelbauman
+"site:linkedin.com/in/ Dilan, Indonesia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Dilan,https://id.linkedin.com/in/ariesrandy
+"site:linkedin.com/in/ Catenary Robotics, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Catenary Robotics,https://www.linkedin.com/in/gregorytoutoundjian
+"site:linkedin.com/in/ Carez, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Carez,https://ca.linkedin.com/in/ray-sadri
+"site:linkedin.com/in/ Bobyard, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Bobyard,https://www.linkedin.com/in/michael-ding-933185189
+"site:linkedin.com/in/ Feufo, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Feufo,https://www.linkedin.com/in/chysubaidullah
+"site:linkedin.com/in/ Jigo AI, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Jigo AI,https://www.linkedin.com/in/ryanshlee
+"site:linkedin.com/in/ Glass, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Glass,https://www.linkedin.com/in/johnfwysseiermba
+"site:linkedin.com/in/ Zkhub, United States, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Zkhub,
+"site:linkedin.com/in/ SwapGPT, Singapore, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,SwapGPT,https://in.linkedin.com/in/shraddha-agarwal-isb
+"site:linkedin.com/in/ Sensigo, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Sensigo,https://www.linkedin.com/in/rakeshhegde
+"site:linkedin.com/in/ FlewBalt, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,FlewBalt,https://in.linkedin.com/in/trinadh-garlapati-2a2037295
+"site:linkedin.com/in/ Tailwind Biotech, Denmark, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Tailwind Biotech,https://dk.linkedin.com/in/mirko-ceriani
+"site:linkedin.com/in/ Quinas Technology, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Quinas Technology,https://pt.linkedin.com/in/sergio-duarte-01509250
+"site:linkedin.com/in/ Citus, Switzerland, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Citus,https://ch.linkedin.com/in/david-sachs
+"site:linkedin.com/in/ Infrared City, Austria, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Infrared City,https://at.linkedin.com/in/angeloschronis
+"site:linkedin.com/in/ ALAL Card, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,ALAL Card,https://sn.linkedin.com/in/el-hadji-doro-gueye
+"site:linkedin.com/in/ SelectFi Lending Solutions, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,SelectFi Lending Solutions,https://www.linkedin.com/in/tommy-vullo-7a4354293
+"site:linkedin.com/in/ SocialInbox, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,SocialInbox,https://au.linkedin.com/in/jessicadavies1
+"site:linkedin.com/in/ MedDefend, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,MedDefend,https://www.linkedin.com/in/sarah-porter-7227381b1
+"site:linkedin.com/in/ Keygo, Hong Kong, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Keygo,https://hk.linkedin.com/in/keith-csh
+"site:linkedin.com/in/ SneakPeek, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,SneakPeek,https://www.linkedin.com/in/imt3
+"site:linkedin.com/in/ AltiusHub, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,AltiusHub,https://in.linkedin.com/in/abiram-v-84828965
+"site:linkedin.com/in/ Algeno, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Algeno,https://se.linkedin.com/in/matsjirstrand
+"site:linkedin.com/in/ Holon health, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Holon health,https://www.linkedin.com/in/jon-zimmerman-6611949b
+"site:linkedin.com/in/ Vector Retail Media, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Vector Retail Media,https://uk.linkedin.com/in/rupertstaines
+"site:linkedin.com/in/ Pixldata, United Kingdom, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Pixldata,
+"site:linkedin.com/in/ Ringneck Ai, Saudi Arabia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Ringneck Ai,https://sa.linkedin.com/in/kamilkafoor
+"site:linkedin.com/in/ Cordys Analytics, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Cordys Analytics,https://nl.linkedin.com/in/revaes
+"site:linkedin.com/in/ Askmay, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Askmay,https://www.linkedin.com/in/jessicamercedes
+"site:linkedin.com/in/ Mmmico, Spain, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Mmmico,https://es.linkedin.com/in/jeronimoromero
+"site:linkedin.com/in/ CoinSub, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,CoinSub,https://www.linkedin.com/in/jasper-fu
+"site:linkedin.com/in/ Hectarea, France, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hectarea,https://fr.linkedin.com/in/paul-rodrigues-bb16b1ba
+"site:linkedin.com/in/ Demtec, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Demtec,https://www.linkedin.com/in/talia-policelli
+"site:linkedin.com/in/ Tolt, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Tolt,https://mk.linkedin.com/in/danielgj
+"site:linkedin.com/in/ AmplifAI, Saudi Arabia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,AmplifAI,https://sa.linkedin.com/in/meshari-f-alwashmi/ar
+"site:linkedin.com/in/ Linker Finance, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Linker Finance,https://www.linkedin.com/in/jagbolanos
+"site:linkedin.com/in/ Swish Brand Experiences, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Swish Brand Experiences,https://www.linkedin.com/in/adamstave
+"site:linkedin.com/in/ WideLabs Ai, Brazil, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,WideLabs Ai,https://br.linkedin.com/in/nelsonleoni/en
+"site:linkedin.com/in/ Pageport, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Pageport,https://www.linkedin.com/in/thomasclawson
+"site:linkedin.com/in/ Walkon Livos, Spain, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Walkon Livos,https://es.linkedin.com/in/mdiazmorquio/en?trk=public_post-text
+"site:linkedin.com/in/ Gainz AI, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Gainz AI,https://uk.linkedin.com/in/edward-albazii
+"site:linkedin.com/in/ KeyAI, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,KeyAI,https://www.linkedin.com/in/keyai-lee
+"site:linkedin.com/in/ SERio, Poland, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,SERio,https://www.linkedin.com/in/michal-gaszynski
+"site:linkedin.com/in/ Ditto, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Ditto,https://uk.linkedin.com/in/suzannakatelockwood
+"site:linkedin.com/in/ Introw, Belgium, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Introw,https://be.linkedin.com/in/andreas-geamanu
+"site:linkedin.com/in/ TimeUp, Portugal, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,TimeUp,https://www.linkedin.com/in/marcos-mariz/
+"site:linkedin.com/in/ Zenso, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Zenso,https://www.linkedin.com/in/russheissner
+"site:linkedin.com/in/ Wizermed, Israel, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Wizermed,https://il.linkedin.com/in/guy-attar-730ab218
+"site:linkedin.com/in/ Eat Express, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Eat Express,https://uk.linkedin.com/in/hamza-asghar-a2b677264
+"site:linkedin.com/in/ Osmos, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Osmos,https://www.linkedin.com/in/dick-ellison-9560387
+"site:linkedin.com/in/ Worky, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Worky,https://www.linkedin.com/in/yafimstrauss
+"site:linkedin.com/in/ Aster, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Aster,https://www.linkedin.com/in/fifikara
+"site:linkedin.com/in/ Foundation, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Foundation,https://www.linkedin.com/in/jenny-lin-0419868a
+"site:linkedin.com/in/ Atheneaedu, Spain, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Atheneaedu,https://es.linkedin.com/in/sandraejarque
+"site:linkedin.com/in/ Vian Therapeutics, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Vian Therapeutics,https://www.linkedin.com/in/jp-robles-1098b1223
+"site:linkedin.com/in/ Trikl.ai, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Trikl.ai,https://www.linkedin.com/in/raushansharma
+"site:linkedin.com/in/ Reachu, Norway, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Reachu,https://www.linkedin.com/in/renatah
+"site:linkedin.com/in/ Skattio, Sweden, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Skattio,https://se.linkedin.com/in/rasagolali/en
+"site:linkedin.com/in/ PeopleCounter, Finland, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,PeopleCounter,https://fi.linkedin.com/in/pentikainen
+"site:linkedin.com/in/ Noble, Canada, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Noble,https://ca.linkedin.com/in/eddya22
+"site:linkedin.com/in/ Lifetime Health, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Lifetime Health,https://in.linkedin.com/in/riabtsev
+"site:linkedin.com/in/ Talmizi, Israel, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Talmizi,https://il.linkedin.com/in/amalzubidat
+"site:linkedin.com/in/ Blue Saturn, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Blue Saturn,https://www.linkedin.com/in/anthonysantos1101
+"site:linkedin.com/in/ DripDoc, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,DripDoc,https://www.linkedin.com/in/hamiltoncory/
+"site:linkedin.com/in/ Fluctlight, Japan, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Fluctlight,https://jp.linkedin.com/in/ugnk
+"site:linkedin.com/in/ Gigbanc, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Gigbanc,https://ng.linkedin.com/in/paulokundaye
+"site:linkedin.com/in/ FameFlow, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,FameFlow,https://www.linkedin.com/in/chrisrojas
+"site:linkedin.com/in/ LucciAI, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,LucciAI,https://www.linkedin.com/in/siclari-herrera-5067b699
+"site:linkedin.com/in/ Girlgroup, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Girlgroup,https://www.linkedin.com/in/alexandehofmann
+"site:linkedin.com/in/ Intryc, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Intryc,https://www.linkedin.com/in/alexmarantelos
+"site:linkedin.com/in/ Mysa, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Mysa,https://in.linkedin.com/in/arpitakapoor
+"site:linkedin.com/in/ Charmed, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Charmed,https://www.linkedin.com/in/jeremytryba
+"site:linkedin.com/in/ Abaco, El Salvador, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Abaco,https://sv.linkedin.com/in/alejandromccormack
+"site:linkedin.com/in/ Micapass, Lithuania, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Micapass,https://lt.linkedin.com/in/justas-ro%C5%BE%C4%97nas-aa9780b5
+"site:linkedin.com/in/ Heylisa, Germany, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Heylisa,https://www.linkedin.com/in/zol-kovacs
+"site:linkedin.com/in/ ScaleMail, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,ScaleMail,https://www.linkedin.com/in/willem-butler
+"site:linkedin.com/in/ Arthum, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Arthum,https://in.linkedin.com/in/darpan-sharma-1b699b19
+"site:linkedin.com/in/ Kotoba Technologies, Japan, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Kotoba Technologies,https://www.linkedin.com/in/kojimano/en
+"site:linkedin.com/in/ Haltia.ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Haltia.ai,https://ae.linkedin.com/in/omar-farooqui-97405a15
+"site:linkedin.com/in/ Sapien, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Sapien,https://www.linkedin.com/in/tonymarks
+"site:linkedin.com/in/ PrimeUp, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,PrimeUp,https://de.linkedin.com/in/crsanket
+"site:linkedin.com/in/ Fram Energy, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Fram Energy,https://www.linkedin.com/in/charlotte-meerstadt
+"site:linkedin.com/in/ Perjury.ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Perjury.ai,https://www.linkedin.com/in/ralphlin
+"site:linkedin.com/in/ Gokei, Chile, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Gokei,https://cl.linkedin.com/in/andres-valdivia-serrano-4254bbb
+"site:linkedin.com/in/ BrokerBotics, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,BrokerBotics,https://www.linkedin.com/in/ahan-dalal
+"site:linkedin.com/in/ Workmagic, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Workmagic,https://www.linkedin.com/in/franklidongyang
+"site:linkedin.com/in/ Collapse Survivor, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Collapse Survivor,https://www.linkedin.com/in/survivor-architect
+"site:linkedin.com/in/ Puppeteer, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Puppeteer,https://uk.linkedin.com/in/daniel-dore-5b04501b7
+"site:linkedin.com/in/ AutoSquared.ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,AutoSquared.ai,https://www.linkedin.com/in/bahador-r-01a32aa3
+"site:linkedin.com/in/ VRenity, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,VRenity,https://www.linkedin.com/in/noliemacdonald
+"site:linkedin.com/in/ Silcofix, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Silcofix,https://in.linkedin.com/in/rajesh-jajodia-6a2770298
+"site:linkedin.com/in/ Annyai, India, founder","Error fetching result: Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""a[jsname=""UWckNb""]""}
+  (Session info: chrome=126.0.6478.127); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+0   chromedriver                        0x00000001007f6a0c chromedriver + 4385292
+1   chromedriver                        0x00000001007ef318 chromedriver + 4354840
+2   chromedriver                        0x000000010040cb0c chromedriver + 281356
+3   chromedriver                        0x000000010044f2f8 chromedriver + 553720
+4   chromedriver                        0x0000000100487d24 chromedriver + 785700
+5   chromedriver                        0x0000000100443eec chromedriver + 507628
+6   chromedriver                        0x00000001004448c4 chromedriver + 510148
+7   chromedriver                        0x00000001007be3c8 chromedriver + 4154312
+8   chromedriver                        0x00000001007c2e2c chromedriver + 4173356
+9   chromedriver                        0x00000001007a3f84 chromedriver + 4046724
+10  chromedriver                        0x00000001007c3718 chromedriver + 4175640
+11  chromedriver                        0x0000000100796f44 chromedriver + 3993412
+12  chromedriver                        0x00000001007e11a8 chromedriver + 4297128
+13  chromedriver                        0x00000001007e1324 chromedriver + 4297508
+14  chromedriver                        0x00000001007eef10 chromedriver + 4353808
+15  libsystem_pthread.dylib             0x00000001894a1034 _pthread_start + 136
+16  libsystem_pthread.dylib             0x000000018949be3c thread_start + 8
+",,
+,,Annyai,
+"site:linkedin.com/in/ Crop Diagnostix, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Crop Diagnostix,https://www.linkedin.com/in/brandonchi
+"site:linkedin.com/in/ Last Minute, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Last Minute,https://www.linkedin.com/in/javier-rodriguez-jr-45104228
+"site:linkedin.com/in/ Soulside, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Soulside,https://www.linkedin.com/in/surabhibhandari
+"site:linkedin.com/in/ Nevemind, Norway, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Nevemind,https://www.linkedin.com/in/elizabeth-tishchenko
+"site:linkedin.com/in/ Legback, Singapore, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Legback,https://sg.linkedin.com/in/duy-anh-nguyen-b02a922b5?trk=people-guest_people_search-card
+"site:linkedin.com/in/ E11tec, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,E11tec,https://www.linkedin.com/in/jamil-atcha-a25b1a4
+"site:linkedin.com/in/ Cyvi, Sweden, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Cyvi,https://se.linkedin.com/in/joakimallwin
+"site:linkedin.com/in/ Katalis Ai, Singapore, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Katalis Ai,https://sg.linkedin.com/in/vinukamal
+"site:linkedin.com/in/ Krispy, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Krispy,https://mx.linkedin.com/in/%C4%91onna-santin-a0144b9b
+"site:linkedin.com/in/ Merx, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Merx,https://uk.linkedin.com/in/pietrocammerini
+"site:linkedin.com/in/ Planning Hub, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Planning Hub,https://uk.linkedin.com/in/ewamoskwiak
+"site:linkedin.com/in/ ActiveBench, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,ActiveBench,https://www.linkedin.com/in/alvarezrick
+"site:linkedin.com/in/ Learna, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Learna,https://uk.linkedin.com/in/courtenayprobert
+"site:linkedin.com/in/ Muchbetter, France, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Muchbetter,https://fr.linkedin.com/in/julienheissat
+"site:linkedin.com/in/ Root Signals, Finland, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Root Signals,https://fi.linkedin.com/in/ogencoglu
+"site:linkedin.com/in/ Themison, Denmark, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Themison,https://dk.linkedin.com/in/juanmiguellopez
+"site:linkedin.com/in/ Pantheon Vision, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Pantheon Vision,https://www.linkedin.com/in/jwsheetsjr
+"site:linkedin.com/in/ Scholarly, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Scholarly,https://www.linkedin.com/in/kentranderson
+"site:linkedin.com/in/ Boolsi, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Boolsi,https://www.linkedin.com/in/mihailoisakov
+"site:linkedin.com/in/ Tapp, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Tapp,https://www.linkedin.com/in/tappjohnking
+"site:linkedin.com/in/ Hackerpulse, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hackerpulse,https://www.linkedin.com/in/glebbraverman
+"site:linkedin.com/in/ Tally It, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Tally It,https://www.linkedin.com/in/mrbrown
+"site:linkedin.com/in/ Metagave Tequila, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Metagave Tequila,https://sg.linkedin.com/in/poojamayee
+"site:linkedin.com/in/ Nūmi, France, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Nūmi,https://fr.linkedin.com/in/eden-banon-lagrange-3069779b
+"site:linkedin.com/in/ Vyrtual, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Vyrtual,https://www.linkedin.com/in/bruce-rogers-56528
+"site:linkedin.com/in/ Hydrox Ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hydrox Ai,https://www.linkedin.com/in/zhuo-li-4830a145
+"site:linkedin.com/in/ Powerbroker Ai, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Powerbroker Ai,https://www.linkedin.com/in/patrick-cooney1
+"site:linkedin.com/in/ Flabs, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Flabs,https://in.linkedin.com/in/harsh-jha-045a04196
+"site:linkedin.com/in/ Hatchfast, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hatchfast,https://www.linkedin.com/in/sachinbaiskar
+"site:linkedin.com/in/ Bakkali, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Bakkali,https://uk.linkedin.com/in/ishanwijewardana
+"site:linkedin.com/in/ Strictly, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Strictly,https://www.linkedin.com/in/chrislamorte
+"site:linkedin.com/in/ Venmob, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Venmob,https://www.linkedin.com/in/zakariaderriche/fr
+"site:linkedin.com/in/ Moo Fund, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Moo Fund,https://uk.linkedin.com/in/richardmoross
+"site:linkedin.com/in/ Cartd, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Cartd,https://uk.linkedin.com/in/th%C3%A9ocesarini/en
+"site:linkedin.com/in/ Merlin Cloud, United Kingdom, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Merlin Cloud,https://uk.linkedin.com/in/adam-drake-57a1b8125
+"site:linkedin.com/in/ Welli, Colombia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Welli,https://co.linkedin.com/in/jaramillofelipe
+"site:linkedin.com/in/ Camperoni, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Camperoni,https://www.linkedin.com/in/tzikis
+"site:linkedin.com/in/ Userology, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Userology,https://in.linkedin.com/in/thisisharsh7
+"site:linkedin.com/in/ Oso, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Oso,https://www.linkedin.com/in/grahamneray
+"site:linkedin.com/in/ UpSide, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,UpSide,https://www.linkedin.com/in/alex-kinnier-419139
+"site:linkedin.com/in/ Intellico, Jordan, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Intellico,https://jo.linkedin.com/in/amjedalsadeq
+"site:linkedin.com/in/ Bariendo, , founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Bariendo,https://www.linkedin.com/in/petchjirapinyo
+"site:linkedin.com/in/ Dexif, India, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Dexif,https://in.linkedin.com/in/deepank-bhandari-161b64a
+"site:linkedin.com/in/ Topshelf, Germany, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Topshelf,https://de.linkedin.com/in/sushrutchafadker
+"site:linkedin.com/in/ Aida, Mexico, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Aida,https://mx.linkedin.com/in/borja-gavica-b92699168
+"site:linkedin.com/in/ Sakana Dream, Japan, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Sakana Dream,https://www.linkedin.com/in/joshuawongsk
+"site:linkedin.com/in/ Carepedia, Indonesia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Carepedia,https://id.linkedin.com/in/zulfi-sebastian-43042a11b
+"site:linkedin.com/in/ Hymdal, Sweden, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hymdal,https://dk.linkedin.com/in/adam-r-rossi
+"site:linkedin.com/in/ Hazana, Indonesia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Hazana,https://id.linkedin.com/in/firmansyah-is-nursal
+"site:linkedin.com/in/ Synna, Singapore, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Synna,https://vn.linkedin.com/in/karsten-eckhardt
+"site:linkedin.com/in/ Annuum, Norway, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Annuum,https://no.linkedin.com/in/christophereinarsrud
+"site:linkedin.com/in/ Archtec, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Archtec,https://es.linkedin.com/in/patricia-garcia-chimeno
+"site:linkedin.com/in/ Plans, Indonesia, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Plans,https://id.linkedin.com/in/dini-widiastuti-a5587b33
+"site:linkedin.com/in/ Union, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Union,https://www.linkedin.com/in/seannui
+"site:linkedin.com/in/ Holi Health, Poland, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Holi Health,https://www.linkedin.com/in/ilyarublevsky
+"site:linkedin.com/in/ Amariso Eyewear, United States, founder",Error fetching result: name 'scrapeCrunchbase' is not defined,,
+,,Amariso Eyewear,https://www.linkedin.com/in/seankuesia23
