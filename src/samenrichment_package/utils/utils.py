@@ -4,6 +4,8 @@ import time
 import pygame
 import os
 
+
+
 def save_results_periodically(output, last_save_time, save_interval, output_csv_file_path):
     current_time = time.time()
     if current_time - last_save_time >= save_interval:

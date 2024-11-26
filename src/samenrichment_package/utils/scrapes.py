@@ -14,6 +14,8 @@ from urllib.parse import quote
 import multiprocessing
 
 def google_search_scrape(driverp, query):
+    print(f"Scraping Google Search")
+
     # 30% chance to scroll
     if random.random() < 0.3:
         driverp.execute_script(f"window.scrollTo(0, {random.randint(100, 500)})")
@@ -27,7 +29,7 @@ def google_search_scrape(driverp, query):
 
     # Randomly choose search param
     search_param = random.choice(search_params)
-
+    
     search_query = quote(query)
     driverp.get(f"https://www.google.com/search{search_param}{search_query}")
     time.sleep(2)

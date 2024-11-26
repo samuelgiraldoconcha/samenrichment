@@ -8,6 +8,7 @@ from .utils import utils, scrapes
 import sys
 import os
 import random
+import pygame
 
 print(sys.path)
 
@@ -24,6 +25,13 @@ df.fillna('', inplace=True)
 results = []
 output_csv_file_path = f"{current_dir}/output_files/search_results.csv"
 
+chrome_options = Options()
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+chrome_options.add_argument(f"user-agent={user_agent}")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-popup-blocking")
+
 # Choose operation when running the script
 def choose_operation():
 
@@ -32,7 +40,7 @@ def choose_operation():
     if operation_to_perform.lower() == "e":
 
         # Start enrichment operation.
-        main_enrichment(df, results, set_chrome_options(), output_csv_file_path)
+        main_enrichment(df, results, output_csv_file_path)
 
         # Clean the results automatically
         cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
@@ -40,7 +48,7 @@ def choose_operation():
         utils.play_alert_sound()
 
         # Close the driver
-        start_chrome_driver().quit()
+        chrome_driver.quit()
 
     # If the scrape gets interrupted, this options is useful for cleaning the results that the user got so far.
     elif operation_to_perform.lower() == "c":
@@ -53,121 +61,103 @@ def choose_operation():
     else:
         print("Invalid operation") 
 
-
-
 # Iterate over each row in the DataFrame
 def main_enrichment(file, output, output_csv_file_path: str, save_interval=10):
     
     print("Starting scrape...")
 
     # Initialize a new Selenium WebDriver session with options
-    driverp = start_chrome_driver()
+    driverp = webdriver.Chrome(options=chrome_options)
+    last_save_time = time.time()
 
-    try:
-        last_save_time = time.time()
+    # Iterate over each row in the DataFrame
+    for index, row in file.iterrows():
 
-        # Add pause flag
-        is_paused = False
+        time.sleep(2.85 + 1.5*random.random())
 
-        # Iterate over each row in the DataFrame
-        for index, row in file.iterrows():
-
-            time.sleep(2.85 + 1.5*random.random())
-
-            # Variables of the rows
-            startup = row['Startup']
-            company_description = row['Industry/description']
-            founding_date = row['Founding date']
-            location = row['HQ Location (World)']
-            company_stage = row['Stage']
-            founder = row['Founder'] if 'Founder' in row else ""
-            firm = row['VC Firm'] if 'VC Firm' in row else ""
-            partner = row["Partner"] if "Partner" in row else ""
-            
-            # Queries
-            queryFounderLinkedIn = f"site:linkedin.com/in/ {startup}, {location},founder, co-founder, co founder, ceo"
-            queryCompanyLinkedIn = f"site:linkedin.com/in/ {startup}, {location}, company"
-            queryWebsite = f"{startup}, {company_description}"
-            queryCrunchbase = f"site:crunchbase.com {startup}"
-            queryPartnerLinkedIn = f"site:linkedin.com/in/ {firm}, {partner}, partner"
-
-            # Scrape packages
-            scrapeFounderLinkedIn = [queryFounderLinkedIn, ""]
-            scrapeCompanyLinkedIn = [queryCompanyLinkedIn, ""]
-            scrapeWebsite = [queryWebsite, ""]
-            scrapeCrunchbase = [queryCrunchbase, ""]
-            scrapePartnerLinkedIn = [queryPartnerLinkedIn, ""]
-
-            # Choose which scrape packages to use
-            scrapes = [scrapeFounderLinkedIn, scrapeCrunchbase]
-
-            # Outputs:
-            funding_date = ""
+        # Variables of the rows
+        startup = row['Startup']
+        company_description = row['Industry/description']
+        founding_date = row['Founding date']
+        location = row['HQ Location (World)']
+        company_stage = row['Stage']
+        founder = row['Founder'] if 'Founder' in row else ""
+        firm = row['VC Firm'] if 'VC Firm' in row else ""
+        partner = row["Partner"] if "Partner" in row else ""
         
-            # Scrape each query in scrapes
-            for scrape in scrapes:
+        # Queries
+        queryFounderLinkedIn = f"site:linkedin.com/in/ {startup}, {location},founder, co-founder, co founder, ceo"
+        queryCompanyLinkedIn = f"site:linkedin.com/in/ {startup}, {location}, company"
+        queryWebsite = f"{startup}, {company_description}"
+        queryCrunchbase = f"site:crunchbase.com {startup}"
+        queryPartnerLinkedIn = f"site:linkedin.com/in/ {firm}, {partner}, partner"
 
-                if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
-                    utils.play_alert_sound()
-                    print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-                    input("Press Enter after completing the CAPTCHA...")
-                    driverp.refresh()
-                    time.sleep(2.85 + 1.5*random.random())
+        # Scrape packages
+        scrapeFounderLinkedIn = [queryFounderLinkedIn, ""]
+        scrapeCompanyLinkedIn = [queryCompanyLinkedIn, ""]
+        scrapeWebsite = [queryWebsite, ""]
+        scrapeCrunchbase = [queryCrunchbase, ""]
+        scrapePartnerLinkedIn = [queryPartnerLinkedIn, ""]
 
-                # Assigns link to empty element of list scrape[n].
-                try:
+        # Choose which scrape packages to use
+        scrape_packages = [scrapeFounderLinkedIn, scrapeCrunchbase]
 
-                    # Scrape google search link
-                    scrape[1] = scrapes.google_search_scrape(driverp, scrape[0])
+        # Outputs:
+        funding_date = ""
+    
+        # Scrape each query in scrapes
+        for scrape in scrape_packages:
 
-                    if scrape == scrapeCrunchbase:
-                        print("Crunchbase Scrape")
-                        company_description = scrapes.scrape_crunchbase_description(driverp,scrape[1])
-                        company_stage = scrapes.scrape_crunchbase_stage(driverp,scrape[1])
-                        funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp,scrape[1])
-                except Exception as e:
-                    # output.append({
-                    #     'Query': scrape[0],
-                    #     'URL': f"Error fetching result: {e}"
-                    # })
-                    # print(f"Error fetching results for query '{scrape[0]}': {e}")
-                    print("No link assigned")
+            if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
+                utils.play_alert_sound()
+                print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
+                input("Press Enter after completing the CAPTCHA...")
+                driverp.refresh()
+                time.sleep(2.85 + 1.5*random.random())
 
-            # Startup output:
-            output.append({
-                'Startup': startup,
-                'Founding date': founding_date,
-                'HQ Location (World)': location,
-                'Industry/description': company_description,
-                'Founder LinkedIn': scrapeFounderLinkedIn[1],
-                'Stage': company_stage,
-                'Last funding date': funding_date
-            })
-            print(f"{startup}, Founder LinkedIn: {scrapeFounderLinkedIn[1]}")
+            # Assigns link to empty element of list scrape[n].
+            try:
 
-            #Investor output:
-            # output.append({
-            #     'Partner': scrapePartnerLinkedIn[1],
-            #     'Firm': firm
-            # })
-            # print(f"{firm}, Partner LinkedIn: {scrapePartnerLinkedIn[1]}")
+                # Scrape google search link
+                print(scrape[0])
+                print(scrape[1])
+                scrape[1] = scrapes.google_search_scrape(driverp, scrape[0])
 
-            last_save_time = utils.save_results_periodically(output, last_save_time, save_interval, output_csv_file_path)
+                if scrape == scrapeCrunchbase:
+                    print("Crunchbase Scrape")
+                    company_description = scrapes.scrape_crunchbase_description(driverp,scrape[1])
+                    company_stage = scrapes.scrape_crunchbase_stage(driverp,scrape[1])
+                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp,scrape[1])
+            except Exception as e:
+                # output.append({
+                #     'Query': scrape[0],
+                #     'URL': f"Error fetching result: {e}"
+                # })
+                # print(f"Error fetching results for query '{scrape[0]}': {e}")
+                print("No link assigned")
 
-        utils.save_results_periodically(output, last_save_time, 0, output_csv_file_path)
-    finally:
-        # Make sure to terminate the prevent_sleep process when done
-        scrapes.prevent_sleep_process.terminate()
-        scrapes.prevent_sleep_process.join()
+        # Startup output:
+        output.append({
+            'Startup': startup,
+            'Founding date': founding_date,
+            'HQ Location (World)': location,
+            'Industry/description': company_description,
+            'Founder LinkedIn': scrapeFounderLinkedIn[1],
+            'Stage': company_stage,
+            'Last funding date': funding_date
+        })
+        print(f"{startup}, Founder LinkedIn: {scrapeFounderLinkedIn[1]}")
+
+        #Investor output:
+        # output.append({
+        #     'Partner': scrapePartnerLinkedIn[1],
+        #     'Firm': firm
+        # })
+        # print(f"{firm}, Partner LinkedIn: {scrapePartnerLinkedIn[1]}")
+
+        last_save_time = utils.save_results_periodically(output, last_save_time, save_interval, output_csv_file_path)
+
+    utils.save_results_periodically(output, last_save_time, 0, output_csv_file_path)
 
 
-def start_chrome_driver():
-    return webdriver.Chrome(options=set_chrome_options())
-def set_chrome_options():
-    chrome_options = Options()
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    chrome_options.add_argument(f"user-agent={user_agent}")
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-popup-blocking")
-    return chrome_options
+choose_operation()
