@@ -39,16 +39,20 @@ def choose_operation():
 
     if operation_to_perform.lower() == "e":
 
+        enrichment_to_perform = input("Enrichment to perform: \n\nStartup (Press 'S') \nInvestor (Press 'I') \n\nYour selection: ")
+        
         # Start enrichment operation.
-        main_enrichment(df, results, output_csv_file_path)
+        main_enrichment(df, output_csv_file_path, enrichment_to_perform)
 
         # Clean the results automatically
         cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
+        print(f"Output CSV file path: {output_csv_file_path}")
+        print(f"Cleaned CSV file path: {cleaned_file_path}")
+        if os.path.getsize(output_csv_file_path) == 0:
+            print("The CSV file is empty.")
+            return
         utils.clean_csv(output_csv_file_path, cleaned_file_path)
         utils.play_alert_sound()
-
-        # Close the driver
-        chrome_driver.quit()
 
     # If the scrape gets interrupted, this options is useful for cleaning the results that the user got so far.
     elif operation_to_perform.lower() == "c":
@@ -62,7 +66,7 @@ def choose_operation():
         print("Invalid operation") 
 
 # Iterate over each row in the DataFrame
-def main_enrichment(file, output, output_csv_file_path: str, save_interval=10):
+def main_enrichment(file, output_csv_file_path: str, enrichment_to_perform: str, save_interval=10):
     
     print("Starting scrape...")
 
@@ -75,32 +79,30 @@ def main_enrichment(file, output, output_csv_file_path: str, save_interval=10):
 
         time.sleep(2.85 + 1.5*random.random())
 
-        # Variables of the rows
-        startup = row['Startup']
-        company_description = row['Industry/description']
-        founding_date = row['Founding date']
-        location = row['HQ Location (World)']
-        company_stage = row['Stage']
-        founder = row['Founder'] if 'Founder' in row else ""
-        firm = row['VC Firm'] if 'VC Firm' in row else ""
-        partner = row["Partner"] if "Partner" in row else ""
-        
-        # Queries
-        queryFounderLinkedIn = f"site:linkedin.com/in/ {startup}, {location},founder, co-founder, co founder, ceo"
-        queryCompanyLinkedIn = f"site:linkedin.com/in/ {startup}, {location}, company"
-        queryWebsite = f"{startup}, {company_description}"
-        queryCrunchbase = f"site:crunchbase.com {startup}"
-        queryPartnerLinkedIn = f"site:linkedin.com/in/ {firm}, {partner}, partner"
+        # Extract row data with default values
+        startup = row.get('Startup', '')
+        company_description = row.get('Industry/description', '')
+        founding_date = row.get('Founding date', '')
+        location = row.get('HQ Location (World)', '')
+        company_stage = row.get('Stage', '')
+        founder = row.get('Founder', '')
+        firm = row.get('VC Firm', '')
+        partner = row.get('Partner', '')
 
-        # Scrape packages
-        scrapeFounderLinkedIn = [queryFounderLinkedIn, ""]
-        scrapeCompanyLinkedIn = [queryCompanyLinkedIn, ""]
-        scrapeWebsite = [queryWebsite, ""]
-        scrapeCrunchbase = [queryCrunchbase, ""]
-        scrapePartnerLinkedIn = [queryPartnerLinkedIn, ""]
+        # Queries stored in a dictionary
+        queries = {
+            "FounderLinkedIn": f"site:linkedin.com/in/ {startup}, {location},founder, co-founder, co founder, ceo",
+            "CompanyLinkedIn": f"site:linkedin.com/in/ {startup}, {location}, company",
+            "Website": f"{startup}, {company_description}",
+            "Crunchbase": f"site:crunchbase.com {startup}",
+            "PartnerLinkedIn": f"site:linkedin.com/in/ {firm}, {partner}, partner"
+        }
 
-        # Choose which scrape packages to use
-        scrape_packages = [scrapeFounderLinkedIn, scrapeCrunchbase]
+        # Scrape packages stored in a list of dictionaries
+        scrape_packages = [
+            {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
+            {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
+        ]
 
         # Outputs:
         funding_date = ""
@@ -119,45 +121,74 @@ def main_enrichment(file, output, output_csv_file_path: str, save_interval=10):
             try:
 
                 # Scrape google search link
-                print(scrape[0])
-                print(scrape[1])
-                scrape[1] = scrapes.google_search_scrape(driverp, scrape[0])
+                print(scrape["query"])
+                scrape["result"] = scrapes.google_search_scrape(driverp, scrape["query"])
 
-                if scrape == scrapeCrunchbase:
+                if scrape["name"] == "Crunchbase":
                     print("Crunchbase Scrape")
-                    company_description = scrapes.scrape_crunchbase_description(driverp,scrape[1])
-                    company_stage = scrapes.scrape_crunchbase_stage(driverp,scrape[1])
-                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp,scrape[1])
+                    company_description = scrapes.scrape_crunchbase_description(driverp,scrape["link"])
+                    company_stage = scrapes.scrape_crunchbase_stage(driverp,scrape["link"])
+                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp,scrape["link"])
             except Exception as e:
-                # output.append({
-                #     'Query': scrape[0],
-                #     'URL': f"Error fetching result: {e}"
-                # })
-                # print(f"Error fetching results for query '{scrape[0]}': {e}")
                 print("No link assigned")
 
-        # Startup output:
-        output.append({
-            'Startup': startup,
-            'Founding date': founding_date,
-            'HQ Location (World)': location,
-            'Industry/description': company_description,
-            'Founder LinkedIn': scrapeFounderLinkedIn[1],
-            'Stage': company_stage,
-            'Last funding date': funding_date
-        })
-        print(f"{startup}, Founder LinkedIn: {scrapeFounderLinkedIn[1]}")
+            if enrichment_to_perform == "s":    
+                # Startup output:
+                results.append({
+                'Startup': startup,
+                'Founding date': founding_date,
+                'HQ Location (World)': location,
+                'Industry/description': company_description,
+                'Founder LinkedIn': scrape_packages[0]["link"],
+                'Stage': company_stage,
+                'Last funding date': funding_date
+                })
+                print(f"{startup}, Founder LinkedIn: {scrape_packages[0]["link"]}")
 
-        #Investor output:
-        # output.append({
-        #     'Partner': scrapePartnerLinkedIn[1],
-        #     'Firm': firm
-        # })
-        # print(f"{firm}, Partner LinkedIn: {scrapePartnerLinkedIn[1]}")
+            if enrichment_to_perform == "i":
+                #Investor output:
+                results.append({
+                    'Partner': scrape_packages[1]["link"],
+                    'Firm': firm
+                })
+                print(f"{firm}, Partner LinkedIn: {scrape_packages[1]["link"]}")
+            
+            last_save_time = utils.save_results_periodically(results, last_save_time, save_interval, output_csv_file_path)
+            print("Empty results" if results == [] else "Results saved")
 
-        last_save_time = utils.save_results_periodically(output, last_save_time, save_interval, output_csv_file_path)
+    # Save the final results
+    utils.save_results_periodically(results, last_save_time, 0, output_csv_file_path)
+    
+    # Close the driver
+    driverp.quit()
 
-    utils.save_results_periodically(output, last_save_time, 0, output_csv_file_path)
+def enrichment_variables(row):
+     # Extract row data with default values
+    row_data = {
+        'startup': row.get('Startup', ''),
+        'company_description': row.get('Industry/description', ''),
+        'founding_date': row.get('Founding date', ''),
+        'location': row.get('HQ Location (World)', ''),
+        'company_stage': row.get('Stage', ''),
+        'founder': row.get('Founder', ''),
+        'firm': row.get('VC Firm', ''),
+        'partner': row.get('Partner', '')
+    }
 
+    # Queries stored in a dictionary
+    queries = {
+        "FounderLinkedIn": f"site:linkedin.com/in/ {row_data['startup']}, {row_data['location']},founder, co-founder, co founder, ceo",
+        "CompanyLinkedIn": f"site:linkedin.com/in/ {row_data['startup']}, {row_data['location']}, company",
+        "Website": f"{row_data['startup']}, {row_data['company_description']}",
+        "Crunchbase": f"site:crunchbase.com {row_data['startup']}",
+        "PartnerLinkedIn": f"site:linkedin.com/in/ {row_data['firm']}, {row_data['partner']}, partner"
+    }
+
+    # Scrape packages stored in a list of dictionaries
+    scrape_packages = [
+        {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
+        {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
+    ]
+    return {"Raw data": row_data, "Queries": queries, "Scrape packages": scrape_packages}
 
 choose_operation()
