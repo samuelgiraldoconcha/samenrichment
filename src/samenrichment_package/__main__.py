@@ -88,62 +88,64 @@ def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perfo
 
         for scrape in queries["Scrape packages"]:
             utils.detect_reCAPTCHA(driverp)
+            link = scrapes.google_search_scrape(driverp, scrape["query"])
+            description = ""
+            stage = ""
+            funding_date = ""
 
-            try:
-                link = scrapes.google_search_scrape(driverp, scrape["query"])
-                linkedin_link = link if scrape["name"] == "FounderLinkedIn" else linkedin_link
-                crunchbase_link = link if scrape["name"] == "Crunchbase" else crunchbase_link
-                print(f"Scraped query: {scrape['query']}")
-
-                if enrichment_to_perform.lower() == "s" and scrape["name"] == "Crunchbase":
-                    print("Crunchbase Scrape")
+            print(f"Scraped query: {scrape['query']}")
+            if scrape["name"] == "FounderLinkedIn":
+                linkedin_link = link
+                updates = [
+                    ("LinkedIn", linkedin_link)
+                ]
+                for column_name, value in updates:
+                    if column_name in column_mapping:
+                        worksheet.update_cell(index + 2, column_mapping[column_name], value)
+        
+            elif scrape["name"] == "Crunchbase":
+                print("Crunchbase Scrape")
+                crunchbase_link = link
+                try:        
                     description = scrapes.scrape_crunchbase_description(driverp, crunchbase_link)
                     stage = scrapes.scrape_crunchbase_stage(driverp, crunchbase_link)
                     funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp, crunchbase_link)
-                    
-                    # Create updates using column mapping
-                    updates = [
-                        ("Industry/Description", description),
-                        ("Stage", stage),
-                        ("Last Funding Date", funding_date),
-                        ("LinkedIn", linkedin_link)
-                    ]
+                except Exception as e:
+                    print(f"Error during scraping/updating: {e}")
+                    continue
 
-                    for column_name, value in updates:
-                        if column_name in column_mapping:
-                            try:
-                                current_row = index + 2  # +2 because index starts at 0 and we skip header
-                                column = column_mapping[column_name]
-                                print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
-                                worksheet.update_cell(current_row, column, value)
-                                time.sleep(1)  # Avoid rate limits
-                            except Exception as e:
-                                print(f"Error updating {column_name}: {e}")
-                        else:
-                            print(f"Warning: Column '{column_name}' not found in sheet")
+                # Define the columns to update and their corresponding values
+                # Format: (Google Sheet Column Name, Value to Insert)
+                updates = [
+                    ("Industry/Description", description),
+                    ("Stage", stage),
+                    ("Last Funding Date", funding_date),
+                    ("Crunchbase", crunchbase_link)
+                ]
 
-                elif enrichment_to_perform.lower() == "i":
-                    updates = [
-                        ("Partner", scrape["link"]),
-                        ("VC Firm", row["VC Firm"])
-                    ]
-
-                    for column_name, value in updates:
-                        if column_name in column_mapping:
-                            try:
-                                current_row = index + 2
-                                column = column_mapping[column_name]
-                                print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
-                                worksheet.update_cell(current_row, column, value)
-                                time.sleep(1)  # Avoid rate limits
-                            except Exception as e:
-                                print(f"Error updating {column_name}: {e}")
-                        else:
-                            print(f"Warning: Column '{column_name}' not found in sheet")
-
-            except Exception as e:
-                print(f"Error during scraping/updating: {e}")
-                continue
+                # Iterate through each column update
+                for column_name, value in updates:
+                    # Check if the column exists in our sheet's header mapping
+                    if column_name in column_mapping:
+                        try:
+                            # Calculate the actual row number in the sheet
+                            # Add 2 because:
+                            # +1 for zero-based index
+                            # +1 for header row at the top
+                            current_row = index + 2
+                            
+                            # Get the column letter/number from our mapping
+                            column = column_mapping[column_name]
+                            
+                            # Log the update operation for debugging
+                            print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
+                            
+                            # Update the specific cell in Google Sheets
+                            worksheet.update_cell(current_row, column, value)
+                        except Exception as e:
+                            print(f"Error updating {column_name}: {e}")
+                    else:
+                        print(f"Warning: Column '{column_name}' not found in sheet")
             
     # Close the driver
     driverp.quit()
@@ -175,28 +177,66 @@ def download_worksheet_data():
     worksheet_data = sh.worksheet("Scrape Enrichment")
     return worksheet_data
 
-def upload_enriched_data(action_elected, worksheet, row_data, crunchbase_link, linkedin_link):
+def upload_enriched_data(driverp, action_elected, column_mapping, scrape, crunchbase_link, linkedin_link):
     # Upload enriched data to the worksheet
-    if action_elected == "s":    
-        # Startup output:
-        results.append({
-        'Startup': row_data["Raw data"]["startup"],
-        'Founding date': row_data["Raw data"]["founding_date"],
-        'HQ Location (World)': row_data["Raw data"]["location"],
-        'Industry/description': row_data["Raw data"]["company_description"],
-        'Crunchbase': crunchbase_link,
-        'Founder LinkedIn': linkedin_link,
-        'Stage': row_data["Raw data"]["company_stage"],
-        'Last funding date': row_data["Raw data"]["last_funding_date"]
-        })
-        print(f"{row_data['Raw data']['startup']}, Founder LinkedIn: {scrape['link']}")
+    if action_elected.lower() == "s" and scrape["name"] == "Crunchbase":
+        print("Crunchbase Scrape")
+        description = scrapes.scrape_crunchbase_description(driverp, crunchbase_link)
+        stage = scrapes.scrape_crunchbase_stage(driverp, crunchbase_link)
+        funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp, crunchbase_link)
+        
+        # Define the columns to update and their corresponding values
+        # Format: (Google Sheet Column Name, Value to Insert)
+        updates = [
+            ("Industry/Description", description),
+            ("Stage", stage),
+            ("Last Funding Date", funding_date),
+            ("LinkedIn", linkedin_link)
+        ]
 
-    if action_elected == "i":
-        #Investor output:
-        results.append({
-            'Partner': scrape["link"],
-            'Firm': row_data["Raw data"]["firm"]
-        })
-        print(f"{row_data['Raw data']['firm']}, Partner LinkedIn: {scrape['link']}")
+        # Iterate through each column update
+        for column_name, value in updates:
+            # Check if the column exists in our sheet's header mapping
+            if column_name in column_mapping:
+                try:
+                    # Calculate the actual row number in the sheet
+                    # Add 2 because:
+                    # +1 for zero-based index
+                    # +1 for header row at the top
+                    current_row = index + 2
+                    
+                    # Get the column letter/number from our mapping
+                    column = column_mapping[column_name]
+                    
+                    # Log the update operation for debugging
+                    print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
+                    
+                    # Update the specific cell in Google Sheets
+                    worksheet.update_cell(current_row, column, value)
+                except Exception as e:
+                    print(f"Error updating {column_name}: {e}")
+            else:
+                print(f"Warning: Column '{column_name}' not found in sheet")
+
+    elif action_elected.lower() == "i":
+        # Similar update process for investor enrichment
+        updates = [
+            ("Partner", scrape["link"]),
+            ("VC Firm", row["VC Firm"])
+        ]
+
+        for column_name, value in updates:
+            if column_name in column_mapping:
+                try:
+                    current_row = index + 2
+                    column = column_mapping[column_name]
+                    print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
+                    worksheet.update_cell(current_row, column, value)
+                    time.sleep(1)  # Avoid rate limits
+                except Exception as e:
+                    print(f"Error updating {column_name}: {e}")
+            else:
+                print(f"Warning: Column '{column_name}' not found in sheet")
+
 
 choose_operation()

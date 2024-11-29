@@ -34,10 +34,21 @@ def google_search_scrape(driverp, query):
     driverp.get(f"https://www.google.com/search{search_param}{search_query}")
     time.sleep(2)
 
-    element = driverp.find_element(By.CSS_SELECTOR, 'a[jsname="UWckNb"]')
-    scraped_link = element.get_attribute('href')
-    print(f'Link: {scraped_link}')
-    return scraped_link
+    # Add wait for element to be present
+    try:
+        # Wait up to 10 seconds for the element to be present
+        element = WebDriverWait(driverp, 1.5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[jsname="UWckNb"]'))
+        )
+        return element.get_attribute('href')
+    except:
+        # If the specific element isn't found, try finding the first search result link
+        try:
+            element = driverp.find_element(By.CSS_SELECTOR, '#search a[href^="http"]')
+            return element.get_attribute('href')
+        except:
+            print(f"No results found for query: {query}")
+            return ""
 
 #Scrape company info from crunchbase, needs a crunchbase link
 def scrape_crunchbase_dateLatestFunding(driverp, scrape_link):
