@@ -9,17 +9,12 @@ import sys
 import os
 import random
 import pygame
+import gspread
 
 print(sys.path)
 
 # Get the current directory where main.py is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Now read the CSV file
-df = pd.read_csv(f"{current_dir}/input_files/template.csv", comment='#')
-
-# Replace NaN with empty strings
-df.fillna('', inplace=True)
 
 # List to store results
 results = []
@@ -41,8 +36,11 @@ def choose_operation():
 
         enrichment_to_perform = input("Enrichment to perform: \n\nStartup (Press 'S') \nInvestor (Press 'I') \n\nYour selection: ")
         
-        # Start enrichment operation.
-        main_enrichment(df, output_csv_file_path, enrichment_to_perform)
+        # Download worksheet data before performing enrichment
+        worksheet_data = download_worksheet_data()
+
+        # Start enrichment operation
+        perform_enrichment(worksheet_data, output_csv_file_path, enrichment_to_perform)
 
         # Clean the results automatically
         cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
@@ -66,122 +64,99 @@ def choose_operation():
         print("Invalid operation") 
 
 # Iterate over each row in the DataFrame
-def main_enrichment(file, output_csv_file_path: str, enrichment_to_perform: str, save_interval=10):
+def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perform: str, save_interval=10):
+    print("Starting enrichment...")
+
+    # Get all the values from the worksheet
+    rows = worksheet.get_all_values()
     
-    print("Starting scrape...")
+    # Get header row and create a mapping of column names to indices
+    headers = rows[0]
+    column_mapping = {header: idx + 1 for idx, header in enumerate(headers)}
+    print("Found columns:", column_mapping)
+
+    # Convert worksheet data to list of dictionaries using header row
+    data = [dict(zip(headers, row)) for row in rows[1:]]
 
     # Initialize a new Selenium WebDriver session with options
     driverp = webdriver.Chrome(options=chrome_options)
-    last_save_time = time.time()
 
-    # Iterate over each row in the DataFrame
-    for index, row in file.iterrows():
-
+    for index, row in enumerate(data):
+        print(f"\nProcessing row {index + 2}")  # +2 because index starts at 0 and we skip header
         time.sleep(2.85 + 1.5*random.random())
+        queries = get_queries(row)
 
-        # Extract row data with default values
-        startup = row.get('Startup', '')
-        company_description = row.get('Industry/description', '')
-        founding_date = row.get('Founding date', '')
-        location = row.get('HQ Location (World)', '')
-        company_stage = row.get('Stage', '')
-        founder = row.get('Founder', '')
-        firm = row.get('VC Firm', '')
-        partner = row.get('Partner', '')
+        for scrape in queries["Scrape packages"]:
+            utils.detect_reCAPTCHA(driverp)
 
-        # Queries stored in a dictionary
-        queries = {
-            "FounderLinkedIn": f"site:linkedin.com/in/ {startup}, {location},founder, co-founder, co founder, ceo",
-            "CompanyLinkedIn": f"site:linkedin.com/in/ {startup}, {location}, company",
-            "Website": f"{startup}, {company_description}",
-            "Crunchbase": f"site:crunchbase.com {startup}",
-            "PartnerLinkedIn": f"site:linkedin.com/in/ {firm}, {partner}, partner"
-        }
-
-        # Scrape packages stored in a list of dictionaries
-        scrape_packages = [
-            {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
-            {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
-        ]
-
-        # Outputs:
-        funding_date = ""
-    
-        # Scrape each query in scrapes
-        for scrape in scrape_packages:
-
-            if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
-                utils.play_alert_sound()
-                print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-                input("Press Enter after completing the CAPTCHA...")
-                driverp.refresh()
-                time.sleep(2.85 + 1.5*random.random())
-
-            # Assigns link to empty element of list scrape[n].
             try:
+                link = scrapes.google_search_scrape(driverp, scrape["query"])
+                linkedin_link = link if scrape["name"] == "FounderLinkedIn" else linkedin_link
+                crunchbase_link = link if scrape["name"] == "Crunchbase" else crunchbase_link
+                print(f"Scraped query: {scrape['query']}")
 
-                # Scrape google search link
-                print(scrape["query"])
-                scrape["result"] = scrapes.google_search_scrape(driverp, scrape["query"])
-
-                if scrape["name"] == "Crunchbase":
+                if enrichment_to_perform.lower() == "s" and scrape["name"] == "Crunchbase":
                     print("Crunchbase Scrape")
-                    company_description = scrapes.scrape_crunchbase_description(driverp,scrape["link"])
-                    company_stage = scrapes.scrape_crunchbase_stage(driverp,scrape["link"])
-                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp,scrape["link"])
+                    description = scrapes.scrape_crunchbase_description(driverp, crunchbase_link)
+                    stage = scrapes.scrape_crunchbase_stage(driverp, crunchbase_link)
+                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp, crunchbase_link)
+                    
+                    # Create updates using column mapping
+                    updates = [
+                        ("Industry/Description", description),
+                        ("Stage", stage),
+                        ("Last Funding Date", funding_date),
+                        ("LinkedIn", linkedin_link)
+                    ]
+
+                    for column_name, value in updates:
+                        if column_name in column_mapping:
+                            try:
+                                current_row = index + 2  # +2 because index starts at 0 and we skip header
+                                column = column_mapping[column_name]
+                                print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
+                                worksheet.update_cell(current_row, column, value)
+                                time.sleep(1)  # Avoid rate limits
+                            except Exception as e:
+                                print(f"Error updating {column_name}: {e}")
+                        else:
+                            print(f"Warning: Column '{column_name}' not found in sheet")
+
+                elif enrichment_to_perform.lower() == "i":
+                    updates = [
+                        ("Partner", scrape["link"]),
+                        ("VC Firm", row["VC Firm"])
+                    ]
+
+                    for column_name, value in updates:
+                        if column_name in column_mapping:
+                            try:
+                                current_row = index + 2
+                                column = column_mapping[column_name]
+                                print(f"Updating {column_name} at row {current_row}, column {column} with: {value}")
+                                worksheet.update_cell(current_row, column, value)
+                                time.sleep(1)  # Avoid rate limits
+                            except Exception as e:
+                                print(f"Error updating {column_name}: {e}")
+                        else:
+                            print(f"Warning: Column '{column_name}' not found in sheet")
+
             except Exception as e:
-                print("No link assigned")
-
-            if enrichment_to_perform == "s":    
-                # Startup output:
-                results.append({
-                'Startup': startup,
-                'Founding date': founding_date,
-                'HQ Location (World)': location,
-                'Industry/description': company_description,
-                'Founder LinkedIn': scrape_packages[0]["link"],
-                'Stage': company_stage,
-                'Last funding date': funding_date
-                })
-                print(f"{startup}, Founder LinkedIn: {scrape_packages[0]["link"]}")
-
-            if enrichment_to_perform == "i":
-                #Investor output:
-                results.append({
-                    'Partner': scrape_packages[1]["link"],
-                    'Firm': firm
-                })
-                print(f"{firm}, Partner LinkedIn: {scrape_packages[1]["link"]}")
+                print(f"Error during scraping/updating: {e}")
+                continue
             
-            last_save_time = utils.save_results_periodically(results, last_save_time, save_interval, output_csv_file_path)
-            print("Empty results" if results == [] else "Results saved")
-
-    # Save the final results
-    utils.save_results_periodically(results, last_save_time, 0, output_csv_file_path)
-    
     # Close the driver
     driverp.quit()
 
-def enrichment_variables(row):
-     # Extract row data with default values
-    row_data = {
-        'startup': row.get('Startup', ''),
-        'company_description': row.get('Industry/description', ''),
-        'founding_date': row.get('Founding date', ''),
-        'location': row.get('HQ Location (World)', ''),
-        'company_stage': row.get('Stage', ''),
-        'founder': row.get('Founder', ''),
-        'firm': row.get('VC Firm', ''),
-        'partner': row.get('Partner', '')
-    }
+def get_queries(row_data):
 
     # Queries stored in a dictionary
     queries = {
-        "FounderLinkedIn": f"site:linkedin.com/in/ {row_data['startup']}, {row_data['location']},founder, co-founder, co founder, ceo",
-        "CompanyLinkedIn": f"site:linkedin.com/in/ {row_data['startup']}, {row_data['location']}, company",
-        "Website": f"{row_data['startup']}, {row_data['company_description']}",
-        "Crunchbase": f"site:crunchbase.com {row_data['startup']}",
-        "PartnerLinkedIn": f"site:linkedin.com/in/ {row_data['firm']}, {row_data['partner']}, partner"
+        "FounderLinkedIn": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']},founder, co-founder, co founder, ceo",
+        "CompanyLinkedIn": f"site:linked   in.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']}, company",
+        "Website": f"{row_data['Startup']}, {row_data['Industry/Description']}",
+        "Crunchbase": f"site:crunchbase.com {row_data['Startup']}",
+        "PartnerLinkedIn": f"site:linkedin.com/in/ {row_data['VC Firm']}, {row_data['Partner']}, partner"
     }
 
     # Scrape packages stored in a list of dictionaries
@@ -189,6 +164,39 @@ def enrichment_variables(row):
         {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
         {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
     ]
-    return {"Raw data": row_data, "Queries": queries, "Scrape packages": scrape_packages}
+    return {"Queries": queries, "Scrape packages": scrape_packages}
+
+def download_worksheet_data():
+    # Connect to Google Sheets
+    gc = gspread.oauth(
+        credentials_filename=f'{current_dir}/gspread/credentials.json'
+    )
+    sh = gc.open("LifeX Lead Generation")
+    worksheet_data = sh.worksheet("Scrape Enrichment")
+    return worksheet_data
+
+def upload_enriched_data(action_elected, worksheet, row_data, crunchbase_link, linkedin_link):
+    # Upload enriched data to the worksheet
+    if action_elected == "s":    
+        # Startup output:
+        results.append({
+        'Startup': row_data["Raw data"]["startup"],
+        'Founding date': row_data["Raw data"]["founding_date"],
+        'HQ Location (World)': row_data["Raw data"]["location"],
+        'Industry/description': row_data["Raw data"]["company_description"],
+        'Crunchbase': crunchbase_link,
+        'Founder LinkedIn': linkedin_link,
+        'Stage': row_data["Raw data"]["company_stage"],
+        'Last funding date': row_data["Raw data"]["last_funding_date"]
+        })
+        print(f"{row_data['Raw data']['startup']}, Founder LinkedIn: {scrape['link']}")
+
+    if action_elected == "i":
+        #Investor output:
+        results.append({
+            'Partner': scrape["link"],
+            'Firm': row_data["Raw data"]["firm"]
+        })
+        print(f"{row_data['Raw data']['firm']}, Partner LinkedIn: {scrape['link']}")
 
 choose_operation()

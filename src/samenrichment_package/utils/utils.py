@@ -3,17 +3,8 @@ import subprocess
 import time
 import pygame
 import os
-
-
-
-def save_results_periodically(output, last_save_time, save_interval, output_csv_file_path):
-    current_time = time.time()
-    if current_time - last_save_time >= save_interval:
-        results_df = pd.DataFrame(output)
-        results_df.to_csv(output_csv_file_path, index=False)
-        print(f"Results saved to {output_csv_file_path} at {time.strftime('%Y-%m-%d %H:%M:%S')}")
-        return current_time  # Update last_save_time
-    return last_save_time  # No save, return the old last_save_times
+from selenium.webdriver.common.by import By
+import random
 
 def play_alert_sound():
     # Initialize Pygame mixer
@@ -72,4 +63,10 @@ def clean_csv(input_file: str, output_file: str):
         return
     return cleaned_df_csv
 
-
+def detect_reCAPTCHA(driver):
+    if driver.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
+        play_alert_sound()
+        print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
+        input("Press Enter after completing the CAPTCHA...")
+        driver.refresh()
+        time.sleep(2.85 + 1.5*random.random())
