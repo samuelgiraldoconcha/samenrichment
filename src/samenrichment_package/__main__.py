@@ -11,26 +11,10 @@ import random
 import pygame
 import gspread
 
-print(sys.path)
-
-# Get the current directory where main.py is located
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# List to store results
-results = []
-output_csv_file_path = f"{current_dir}/output_files/search_results.csv"
-
-chrome_options = Options()
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-chrome_options.add_argument(f"user-agent={user_agent}")
-chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--disable-notifications")
-chrome_options.add_argument("--disable-popup-blocking")
-
 # Choose operation when running the script
 def choose_operation():
 
-    operation_to_perform = input("\nOperation to perform: \n\nEnrichment (Press 'E') \nClean results (Press 'C') \nPrevent sleep (Press 'P') \n\nYour selection: ")
+    operation_to_perform = input("\nOperation to perform: \n\nEnrichment (Press 'E') \n\nPrevent sleep (Press 'P') \n\nYour selection: ")
 
     if operation_to_perform.lower() == "e":
 
@@ -40,22 +24,9 @@ def choose_operation():
         worksheet_data = download_worksheet_data()
 
         # Start enrichment operation
-        perform_enrichment(worksheet_data, output_csv_file_path, enrichment_to_perform)
+        perform_enrichment(worksheet_data, enrichment_to_perform)
 
-        # Clean the results automatically
-        cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
-        print(f"Output CSV file path: {output_csv_file_path}")
-        print(f"Cleaned CSV file path: {cleaned_file_path}")
-        if os.path.getsize(output_csv_file_path) == 0:
-            print("The CSV file is empty.")
-            return
-        utils.clean_csv(output_csv_file_path, cleaned_file_path)
         utils.play_alert_sound()
-
-    # If the scrape gets interrupted, this options is useful for cleaning the results that the user got so far.
-    elif operation_to_perform.lower() == "c":
-        cleaned_file_path = f'{current_dir}/output_files/cleaned_search_results.csv'
-        utils.clean_csv(output_csv_file_path, cleaned_file_path)
 
     elif operation_to_perform.lower() == "p":
         utils.prevent_sleep(6000)
@@ -64,9 +35,22 @@ def choose_operation():
         print("Invalid operation") 
 
 # Iterate over each row in the DataFrame
-def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perform: str, save_interval=10):
+def perform_enrichment(worksheet, enrichment_to_perform: str, save_interval=10):
     print("Starting enrichment...")
-    driverp = webdriver.Chrome(options=chrome_options)
+
+    chrome_options = Options()
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    chrome_options.add_argument(f"user-agent={user_agent}")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-popup-blocking")
+
+    #proxy = rand_proxy()
+    #chrome_options.add_argument(f"--proxy-server={proxy}")
+
+    #TODO: Decide wether to change to request based or keep selenium based.
+    #TODO: Change all places with driverp, to browser.
+    browser = webdriver.Chrome(options=chrome_options)
     rows = worksheet.get_all_values()
     
     # Get header row and create a mapping of column names to indices
@@ -82,8 +66,8 @@ def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perfo
         queries = get_queries(row)
 
         for scrape in queries["Scrape packages"]:
-            utils.detect_reCAPTCHA(driverp)
-            link = scrapes.google_search_scrape(driverp, scrape["query"])
+            utils.detect_reCAPTCHA(browser)
+            link = scrapes.google_search_scrape(browser, scrape["query"])
             description = ""
             stage = ""
             funding_date = ""
@@ -100,9 +84,9 @@ def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perfo
                 print("Crunchbase Scrape")
                 crunchbase_link = link
                 try:        
-                    description = scrapes.scrape_crunchbase_description(driverp, crunchbase_link)
-                    stage = scrapes.scrape_crunchbase_stage(driverp, crunchbase_link)
-                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(driverp, crunchbase_link)
+                    description = scrapes.scrape_crunchbase_description(browser, crunchbase_link)
+                    stage = scrapes.scrape_crunchbase_stage(browser, crunchbase_link)
+                    funding_date = scrapes.scrape_crunchbase_dateLatestFunding(browser, crunchbase_link)
                 except Exception as e:
                     print(f"Error during scraping/updating: {e}")
                     continue
@@ -118,7 +102,7 @@ def perform_enrichment(worksheet, output_csv_file_path: str, enrichment_to_perfo
                 upload_enriched_data(updates, column_mapping, index, worksheet)
             
     # Close the driver
-    driverp.quit()
+    browser.quit()
 
 def get_queries(row_data):
 
@@ -171,5 +155,13 @@ def upload_enriched_data(updates, column_mapping, index, worksheet):
                 print(f"Error updating {column_name}: {e}")
         else:
             print(f"Warning: Column '{column_name}' not found in sheet")
+
+def rand_proxy():
+    return proxy
+
+print(sys.path)
+
+# Get the current directory where main.py is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 choose_operation()
