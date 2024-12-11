@@ -10,7 +10,13 @@ import sys
 from .utils import utils, scrapes
 import httpx
 from gspread.utils import ValueRenderOption
+from dotenv import load_dotenv
 
+load_dotenv()
+
+proxy_server = os.getenv("PROXY_SERVER")
+proxy_username = os.getenv("PROXY_USERNAME")
+proxy_password = os.getenv("PROXY_PASSWORD")
 
 # Get the current directory where main.py is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -65,9 +71,9 @@ async def start_context(contexts, browser, index):
     while index == stop:
         context = await browser.new_context(
             proxy = {
-                "server" : "http://gate.smartproxy.com:7000",
-                "username" : "sp5ncwtwdd",
-                "password" : "1iY+leztcI8lS6dRu9"
+                "server" : proxy_server,
+                "username" : proxy_username,
+                "password" : proxy_password
             }
         )
         try:
