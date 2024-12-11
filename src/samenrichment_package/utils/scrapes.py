@@ -1,9 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import quote
 import pandas as pd
 import time
 import random
@@ -12,62 +7,71 @@ from . import utils
 from urllib.parse import quote
 #from . import models
 import multiprocessing
+from playwright.async_api import async_playwright
+import asyncio
+import os
 
-def google_search_scrape(driverp, query):
-    print(f"Scraping Google Search")
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # 30% chance to scroll
+async def google_search_scrape(contexts, index, query, company):
+    """
+    Performs a Google search for the given query using Playwright.
+    Returns the first search result link if found.
+    """
+    page = await contexts[int(index % len(contexts))].new_page()
+    await asyncio.sleep(2.85 + 1.5 * random.random())
+    await utils.detect_reCAPTCHA(page)
+    
+    print("Scraping Google Search")
+    link_result = ""
+
+    # 30% chance to scroll randomly
     if random.random() < 0.3:
-        driverp.execute_script(f"window.scrollTo(0, {random.randint(100, 500)})")
-        time.sleep(0.5 + random.random())
-    
-    search_params = [
-    "?q=",
-    "?query=",
-    "?search="
-    ]
+        scroll_position = random.randint(100, 500)
+        await page.evaluate(f"window.scrollTo(0, {scroll_position})")
+        await page.wait_for_timeout(500 + random.randint(0, 500))
 
-    # Randomly choose search param
+    # Randomly choose a search parameter
+    search_params = ["?q=", "?query=", "?search="]
     search_param = random.choice(search_params)
-    
-    search_query = quote(query)
-    driverp.get(f"https://www.google.com/search{search_param}{search_query}")
-    time.sleep(2)
 
-    # Add wait for element to be present
+    # Format the search URL
+    search_query = quote(query)
+    search_url = f"https://www.google.com/search{search_param}{search_query}"
+
     try:
-        # Wait up to 10 seconds for the element to be present
-        element = WebDriverWait(driverp, 1.5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[jsname="UWckNb"]'))
-        )
-        return element.get_attribute('href')
-    except:
-        # If the specific element isn't found, try finding the first search result link
-        try:
-            element = driverp.find_element(By.CSS_SELECTOR, '#search a[href^="http"]')
-            return element.get_attribute('href')
-        except:
+        await page.goto(search_url)
+        print("LLEGAMOS***********************")
+        link_locator = page.locator(f'a:has-text("{company}")')
+        # Ensure at least one result exists
+        if await link_locator.count() > 0:
+            # Get the href attribute of the first result
+            href_value = await link_locator.first.get_attribute('href')
+            print(f"Found LinkedIn link: {href_value}")
+            link_result = href_value
+        else: 
             print(f"No results found for query: {query}")
-            return ""
+
+    except Exception as e:
+        print(f"Failed scrape in query: {query}, Error: {e}")
+    
+    finally:
+        return link_result
+    
+    
 
 #Scrape company info from crunchbase, needs a crunchbase link
-def scrape_crunchbase_dateLatestFunding(driverp, scrape_link):
+async def scrape_crunchbase_dateLatestFunding(page, scrape_link):
     print("Scrape Date of latest funding")
     financials_url = scrape_link + '/company_financials'
-    driverp.get(financials_url)
-    
-    if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
-        utils.play_alert_sound()
-        print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-        input("Press Enter after completing the CAPTCHA...")
-        driverp.refresh()
-        time.sleep(2.85 + 1.5*random.random())
+    await page.goto(financials_url)
     
     # Add random delay after page load
-    time.sleep(0.4+0.5*random.random())    
+    await asyncio.sleep(0.4 + 0.5 * random.random())
+
     # Simulate human-like scrolling
     scroll_height = random.randint(100, 300)
-    driverp.execute_script(f"window.scrollTo(0, {scroll_height})")
+    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
 
     # Define all CSS selectors
     selectors = [
@@ -80,7 +84,9 @@ def scrape_crunchbase_dateLatestFunding(driverp, scrape_link):
     funding_date = ""
     for selector in selectors:
         try:
-            funding_date = driverp.find_element(By.CSS_SELECTOR, selector).text
+            funding_date = await page.locator(
+            selector
+            ).inner_text()
             if funding_date:  # If we found a date, break the loop
                 break
         except:
@@ -89,47 +95,54 @@ def scrape_crunchbase_dateLatestFunding(driverp, scrape_link):
     print(funding_date)
     return funding_date
 
-def scrape_crunchbase_description(driverp, scrape_link):
+async def scrape_crunchbase_description(page, scrape_link):
     print("Description")
-    driverp.get(scrape_link)
-
-    if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
-        utils.play_alert_sound()
-        print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-        input("Press Enter after completing the CAPTCHA...")
-        driverp.refresh()
-        time.sleep(2.85 + 1.5*random.random())
+    description = ""
+    await page.goto(scrape_link)
 
     # Add random delay after page load
-    time.sleep(0.4+0.5*random.random())    
+    await asyncio.sleep(0.4 + 0.5 * random.random())
+
     # Simulate human-like scrolling
     scroll_height = random.randint(100, 300)
-    driverp.execute_script(f"window.scrollTo(0, {scroll_height})")
+    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
 
-    description = driverp.find_element(By.CSS_SELECTOR, '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > description-card > div > span').text
-    print(description)
-    return description
+    # Extract the description
+    try:
+        description = await page.locator(
+            '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > description-card > div > span'
+        ).inner_text()
+        print(description)
+    except Exception as e:
+        print(f"Error extracting description: {e}")
+    finally:
 
-def scrape_crunchbase_stage(driverp, scrape_link):
+        return description
+
+async def scrape_crunchbase_stage(page, scrape_link):
     print("Stage")
-    driverp.get(scrape_link)
-
-    if driverp.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
-        utils.play_alert_sound()
-        print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-        input("Press Enter after completing the CAPTCHA...")
-        driverp.refresh()
-        time.sleep(2.85 + 1.5*random.random())
+    stage = ""
+    await page.goto(scrape_link)
 
     # Add random delay after page load
-    time.sleep(0.4+0.5*random.random())    
+    await asyncio.sleep(0.4 + 0.5 * random.random())
+
     # Simulate human-like scrolling
     scroll_height = random.randint(100, 300)
-    driverp.execute_script(f"window.scrollTo(0, {scroll_height})")
+    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
 
-    stage = driverp.find_element(By.CSS_SELECTOR, '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > fields-card > ul > li:nth-child(3) > label-with-icon > span > field-formatter > a').text
-    print(stage)
-    return stage
+    # Extract the description
+    try:
+        stage = await page.locator(
+            '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > fields-card > ul > li:nth-child(3) > label-with-icon > span > field-formatter > a'
+        ).inner_text()
+        print(stage)
+    except Exception as e:
+        print(f"Error extracting description: {e}")
+    finally:
+        return stage
+
+
 
 # def scrape_linkedin_no_session(driverp, scrape_link):
 #     #base-contextual-sign-in-modal > div > section > button > icon > svg

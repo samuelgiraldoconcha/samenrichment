@@ -3,8 +3,9 @@ import subprocess
 import time
 import pygame
 import os
-from selenium.webdriver.common.by import By
 import random
+from playwright.async_api import async_playwright
+import asyncio
 
 def play_alert_sound():
     # Initialize Pygame mixer
@@ -63,10 +64,26 @@ def clean_csv(input_file: str, output_file: str):
         return
     return cleaned_df_csv
 
-def detect_reCAPTCHA(driver):
-    if driver.find_elements(By.CSS_SELECTOR, 'div.g-recaptcha'):
+async def detect_reCAPTCHA(page):
+    # Check for the presence of the reCAPTCHA element
+    captcha_count = await page.locator('div.g-recaptcha').count()
+    if captcha_count > 0:
         play_alert_sound()
         print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
-        input("Press Enter after completing the CAPTCHA...")
-        driver.refresh()
-        time.sleep(2.85 + 1.5*random.random())
+
+def get_queries(row_data):
+    # Queries stored in a dictionary
+    queries = {
+        "FounderLinkedIn": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']},founder, co-founder, co founder, ceo",
+        "CompanyLinkedIn": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']}, company",
+        "Website": f"{row_data['Startup']}, {row_data['Industry/Description']}",
+        "Crunchbase": f"site:crunchbase.com {row_data['Startup']}",
+        "PartnerLinkedIn": f"site:linkedin.com/in/ {row_data['VC Firm']}, {row_data['Partner']}, partner"
+    }
+
+    # Scrape packages stored in a list of dictionaries
+    scrape_packages = [
+        {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
+        {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
+    ]
+    return {"Queries": queries, "Scrape packages": scrape_packages}
