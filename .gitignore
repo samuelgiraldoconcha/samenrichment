@@ -1,0 +1,25 @@
+# Ignore environment files
+.env
+gspread/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore files not in use.
+alembic/
+input_files/
+output_files/
+
