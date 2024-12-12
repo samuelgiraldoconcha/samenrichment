@@ -74,16 +74,13 @@ async def detect_reCAPTCHA(page):
 def get_queries(row_data):
     # Queries stored in a dictionary
     queries = {
-        "FounderLinkedIn": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']},founder, co-founder, co founder, ceo",
-        "CompanyLinkedIn": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']}, company",
-        "Website": f"{row_data['Startup']}, {row_data['Industry/Description']}",
-        "Crunchbase": f"site:crunchbase.com {row_data['Startup']}",
-        "PartnerLinkedIn": f"site:linkedin.com/in/ {row_data['VC Firm']}, {row_data['Partner']}, partner"
+        "linkedin": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']},founder, co-founder, co founder, ceo",
+        "crunchbase": f"site:crunchbase.com {row_data['Startup']}",
     }
 
     # Scrape packages stored in a list of dictionaries
     scrape_packages = [
-        {"name": "FounderLinkedIn", "query": queries["FounderLinkedIn"], "link": ""},
-        {"name": "Crunchbase", "query": queries["Crunchbase"], "link": ""}
+        {"name": "linkedin", "query": queries["linkedin"], "link": ""},
+        {"name": "crunchbase", "query": queries["crunchbase"], "link": ""}
     ]
     return {"Queries": queries, "Scrape packages": scrape_packages}

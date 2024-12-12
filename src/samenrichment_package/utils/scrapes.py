@@ -10,8 +10,10 @@ import multiprocessing
 from playwright.async_api import async_playwright
 import asyncio
 import os
+import json
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+CRUNCHBASE_DIR = os.path.join(current_dir, '.json', 'crunchbase')
 
 async def google_search_scrape(contexts, query, company):
     """
@@ -63,7 +65,70 @@ async def google_search_scrape(contexts, query, company):
     finally:
         return link_result
     
+async def company_info_crunchbase(contexts, query, crunchbase_profile):
+    """
+    Scrapes entire html of company info from crunchbase.
+    Stores in a json file.
+    Scrapes the following:
+    - Name of first founder
+    - Founded Date
+    - Description
+    - Stages
+    - Date of latest funding
+    """
+    page = await contexts[random.randint(0,len(contexts)-1)].new_page()
     
+    # Block expensive resources
+    await page.route("**/*.{png,jpg,jpeg,gif,webp,pdf,mp4,webm,mp3,wav}", lambda route: route.abort())
+    await page.route("**/*{analytics,advertising,doubleclick,tracking}*", lambda route: route.abort())
+    
+    await asyncio.sleep(2.85 + 1.5 * random.random())
+    await utils.detect_reCAPTCHA(page)
+    
+    print("Scraping Crunchbase's company profile API")
+    content = ""
+
+    # 30% chance to scroll randomly
+    if random.random() < 0.3:
+        scroll_position = random.randint(100, 500)
+        await page.evaluate(f"window.scrollTo(0, {scroll_position})")
+        await page.wait_for_timeout(500 + random.randint(0, 500))
+
+    # Randomly choose a search parameter
+    search_params = ["?q=", "?query=", "?search="]
+    search_param = random.choice(search_params)
+
+    # Format Crunchbase's company profile API URL
+    search_url = f'https://www.crunchbase.com/v4/data/entities/organizations/{crunchbase_profile}?field_ids=%5B%22identifier%22,%22layout_id%22,%22facet_ids%22,%22title%22,%22short_description%22,%22is_locked%22%5D&layout_mode=view_v2'
+
+    try:
+        await page.goto(search_url)
+        print("LLEGAMOS***********************")
+        content = await page.content()
+        print(content[:100])  # Only print first 100 characters
+        
+        # Save JSON content to file
+        try:
+            json_content = json.loads(content)
+            os.makedirs(CRUNCHBASE_DIR, exist_ok=True)  # Create directory if it doesn't exist
+            file_path = os.path.join(CRUNCHBASE_DIR, f'{crunchbase_profile}.json')
+            with open(file_path, 'w') as f:
+                json.dump(json_content, f, indent=2)
+            preview = json.dumps(json_content, indent=2)[:100]
+            print(f"Content saved to: {file_path}")
+            print("Content preview:")
+            print(preview + "...")
+        except json.JSONDecodeError:
+            print("Content is not valid JSON. First 500 characters:")
+            print(content[:500] + "...")
+            return content   
+    except Exception as e:
+        print(f"Failed scrape in query: {query}, Error: {e}")    
+        return content
+    finally:
+        return content
+    
+
 
 #Scrape company info from crunchbase, needs a crunchbase link
 async def scrape_crunchbase_dateLatestFunding(page, scrape_link):
@@ -151,31 +216,55 @@ async def scrape_crunchbase_stage(page, scrape_link):
     finally:
         return stage
 
-
-
-# def scrape_linkedin_no_session(driverp, scrape_link):
-#     #base-contextual-sign-in-modal > div > section > button > icon > svg
-#     #main-content > section.core-rail.mx-auto.papabear\:w-core-rail-width.mamabear\:max-w-\[790px\].babybear\:max-w-\[790px\] > div > section.core-section-container.core-section-container--with-border.border-b-1.border-solid.border-color-border-faint.py-4.text-color-text > div > p
-#     print(f'Link: {scrape_link}')
-#     press_button(driverp,scrape_link,"base-contextual-sign-in-modal > div > section > button > icon > svg")
-#     time.sleep(2)
-#     description_tag = driverp.find_element(By.CSS_SELECTOR, "[data-test-id='about-us__description']")
-#     description = description_tag.text.strip()
-#     print(f'Decription:{description}')
-#     return description
-
-def press_button(driver, url, tag):
-    print("Button")
-    try:
-        # Navigate to the provided URL
-        driver.get(url)
         
-        # Wait until the button is clickable and then click it
-        button = WebDriverWait(driver, 2).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, tag))
-        )
-        button.click()
-        print("Button clicked successfully.")
+def get_crunchbase_value(crunchbase_profile, key_to_find):
+    """
+    Retrieves a value from a Crunchbase JSON file by its key.
+    
+    Args:
+        crunchbase_profile (str): The profile ID/name of the Crunchbase file
+        key_to_find (str): The key to search for in the JSON
+    
+    Returns:
+        The value associated with the key if found, None otherwise
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_DIR, f'{crunchbase_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return None
+            
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            
+        def find_key(obj, key):
+            if isinstance(obj, dict):
+                if key in obj:
+                    return obj[key]
+                for k, v in obj.items():
+                    result = find_key(v, key)
+                    if result is not None:
+                        return result
+            elif isinstance(obj, list):
+                for item in obj:
+                    result = find_key(item, key)
+                    if result is not None:
+                        return result
+            return None
+            
+        result = find_key(data, key_to_find)
+        if result is not None:
+            print(f"Found value for key '{key_to_find}': {result}")
+            return result
+        else:
+            print(f"Key '{key_to_find}' not found in file")
+            return None
+            
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON in file {file_path}")
+        return None
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Error reading file: {e}")
+        return None
         

@@ -21,65 +21,23 @@ proxy_password = os.getenv("PROXY_PASSWORD")
 # Get the current directory where main.py is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# async def get_crunchbase_link(contexts, i, row, column_mapping, worksheet):
-
-#     print(f"\nProcessing row {i + 2}")  # +2 because index starts at 0 and we skip header
-#     # Random context generates new page.
-    
-#     try:
-#         queries = get_queries(row)
-#         print("Ready page and queries")
-#     except:
-#         print("Failed at creating new page for scrape")
-
-#     asyncio.sleep(2.85 + 1.5 * random.random())
-#     for scrape in queries["Scrape packages"]:
-#         page = await contexts[i % 10].new_page()
-#         await utils.detect_reCAPTCHA(page)
-#         link = await scrapes.google_search_scrape(page, scrape["query"], row["Startup"])
-#         description = ""
-#         stage = ""
-#         funding_date = ""
-#         print(f"Scraped query: {scrape['query']}")
-
-#         # LinkedIn scrape
-#         if scrape["name"] == "FounderLinkedIn":
-#             linkedin_link = link if row["LinkedIn"] == "" else row["LinkedIn"]
-#             updates = [
-#                 ("LinkedIn", linkedin_link)
-#             ]
-#             upload_enriched_data(updates, column_mapping, i, worksheet)
-
-
-
-#         # Crunchbase scrape
-#         elif scrape["name"] == "Crunchbase":
-#             print("Crunchbase Scrape")
-#             crunchbase_link = link if row["Crunchbase"] == "" else row["Crunchbase"]
-#             # try:
-#             #     description,= await scrapes.scrape_crunchbase_description(page, crunchbase_link) if row["Industry/Description"] == "" else row["Industry/Description"]
-#             #     stage = await scrapes.scrape_crunchbase_stage(page, crunchbase_link) if row["Stage"] == "" else row["Stage"]
-#             #     funding_date = await scrapes.scrape_crunchbase_dateLatestFunding(page, crunchbase_link) if row["Last Funding Date"] == "" else row["Last Funding Stage"]
-#             # except Exception as e:
-#             #     print(f"Error during scraping/updating: {e}")
-#             #     continue
-#             updates = [
-#                 # ("Industry/Description", description),
-#                 # ("Stage", stage),
-#                 # ("Last Funding Date", funding_date),
-#                 ("Crunchbase", crunchbase_link)
-#             ]
-#             upload_enriched_data(updates, column_mapping, i, worksheet)
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+]
 
 async def start_context(contexts, browser, index):
     stop = index
     while index == stop:
         context = await browser.new_context(
-            proxy = {
-                "server" : proxy_server,
-                "username" : proxy_username,
-                "password" : proxy_password
-            }
+            # proxy = {
+            #     "server" : proxy_server,
+            #     "username" : proxy_username,
+            #     "password" : proxy_password
+            # },
+            user_agent=random.choice(USER_AGENTS)
         )
         try:
             ip_page = await context.new_page()
@@ -147,7 +105,7 @@ async def get_platform_link(contexts, index_worksheet, row, column_mapping, work
     print(f"\nProcessing row {index_worksheet}")
     
     # Get appropriate query based on platform
-    query_key = "FounderLinkedIn" if platform == "LinkedIn" else "Crunchbase"
+    query_key = platform
     google_search_query = utils.get_queries(row)["Queries"][query_key]
     print(f"Ready GoogleSearch<>{platform} query: {google_search_query}")
 
@@ -158,9 +116,10 @@ async def get_platform_link(contexts, index_worksheet, row, column_mapping, work
     column_idx = column_mapping.get(platform)
     cell_value = worksheet.cell(index_worksheet, column_idx).value
     platform_link = link if not cell_value or cell_value.strip() == "" else cell_value
+    profile_name = extract_profile(platform_link)
     
     # Update worksheet
-    updates = [(platform, platform_link)]
+    updates = [(platform, platform_link), (f'{platform}_profile', profile_name)]
     upload_enriched_data(updates, column_mapping, index_worksheet, worksheet)
 
 def find_blank_cells(table, column_mapping, column_idx):
@@ -188,17 +147,45 @@ def find_blank_cells(table, column_mapping, column_idx):
             
     return blank_cells
 
+def extract_profile(url: str) -> str:
+    """
+    Extracts the company profile name from a Crunchbase URL.
+    
+    Args:
+        url (str): The Crunchbase URL
+        
+    Returns:
+        str: The company profile name (last part of the URL)
+        
+    Example:
+        >>> extract_profile("https://www.crunchbase.com/organization/elythea", "crunchbase")
+        'elythea'
+    """
+    # Remove any trailing whitespace and split by '/'
+    clean_url = url.strip()
+    parts = clean_url.split('/')
+    
+    # Return the last non-empty part
+    return parts[-1].strip()
+
 async def perform_enrichment(enrichment_to_perform: str, save_interval=10):
     print("Starting enrichment...")
 
     async with async_playwright() as p:
         worksheet_data = access_to_worksheet_data()
         table, column_mapping = update_table(worksheet_data)
-        linkedin_col_idx = column_mapping.get("LinkedIn")
-        crunchbase_col_idx = column_mapping.get("Crunchbase")
+
+        linkedin_col_idx = column_mapping.get("linkedin")
         blanks_linkedin = find_blank_cells(table, column_mapping, linkedin_col_idx)
+        print(f"\nFound {len(blanks_linkedin)} LinkedIn blanks")
+
+        crunchbase_col_idx = column_mapping.get("crunchbase")
         blanks_crunchbase_link = find_blank_cells(table, column_mapping, crunchbase_col_idx)
-        print(f"\nFound {len(blanks_linkedin)} LinkedIn blanks and {len(blanks_crunchbase_link)} Crunchbase blanks.")
+        print(f"\nFound {len(blanks_crunchbase_link)} Crunchbase blanks.")
+
+        description_col_idx = column_mapping.get("description")
+        description_blanks = find_blank_cells(table, column_mapping, description_col_idx)
+        print(f"\nFound {len(description_blanks)} Description blanks.")
 
         while len(blanks_linkedin) > 0:
             # Initialize the browser
@@ -213,7 +200,7 @@ async def perform_enrichment(enrichment_to_perform: str, save_interval=10):
 
             # Start LinkedIn scrape session.
             tasks = [get_platform_link(contexts, blank_cell[0], table[blank_cell[0] - 2], 
-                     column_mapping, worksheet_data, "LinkedIn") 
+                     column_mapping, worksheet_data, "linkedin") 
                      for blank_cell in blanks_linkedin]
             await asyncio.gather(*tasks)
 
@@ -239,7 +226,7 @@ async def perform_enrichment(enrichment_to_perform: str, save_interval=10):
 
             # Start LinkedIn scrape session.
             tasks = [get_platform_link(contexts, blank_cell[0], table[blank_cell[0] - 2], 
-                     column_mapping, worksheet_data, "Crunchbase") 
+                     column_mapping, worksheet_data, "crunchbase") 
                      for blank_cell in blanks_crunchbase_link]
             await asyncio.gather(*tasks)
 
@@ -251,6 +238,35 @@ async def perform_enrichment(enrichment_to_perform: str, save_interval=10):
 
             # Close the browser
             await browser.close()
+
+        while len(description_blanks) > 0:
+            print(f"\n\nDescription blanks: {len(description_blanks)}")
+
+            # Initialize the browser
+            browser = await p.webkit.launch(headless=True)
+
+            # Set up contexts with rotating IPs
+            number_of_contexts = 5 if len(description_blanks) > 5 else len(description_blanks)
+            contexts = []
+            tasks = [start_context(contexts, browser, i) for i in range(number_of_contexts)]
+            await asyncio.gather(*tasks)
+            print(f"Set up {len(contexts)} contexts.")
+
+            # Start LinkedIn scrape session.
+            tasks = [get_platform_link(contexts, blank_cell[0], table[blank_cell[0] - 2], 
+                     column_mapping, worksheet_data, "description") 
+                     for blank_cell in description_blanks]
+            await asyncio.gather(*tasks)
+
+            worksheet_data = access_to_worksheet_data()
+            table, column_mapping = update_table(worksheet_data)
+            description_blanks = find_blank_cells(table, column_mapping, description_col_idx)
+
+            print(f"\n\nBlank Description cells: {len(description_blanks)}")
+
+            # Close the browser
+            await browser.close()
+        
 
 # Choose operation when running the script
 async def main():
