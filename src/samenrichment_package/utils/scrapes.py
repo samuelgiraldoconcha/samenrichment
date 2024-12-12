@@ -13,12 +13,17 @@ import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-async def google_search_scrape(contexts, index, query, company):
+async def google_search_scrape(contexts, query, company):
     """
     Performs a Google search for the given query using Playwright.
     Returns the first search result link if found.
     """
-    page = await contexts[int(index % len(contexts))].new_page()
+    page = await contexts[random.randint(0,len(contexts)-1)].new_page()
+    
+    # Block expensive resources
+    await page.route("**/*.{png,jpg,jpeg,gif,webp,pdf,mp4,webm,mp3,wav}", lambda route: route.abort())
+    await page.route("**/*{analytics,advertising,doubleclick,tracking}*", lambda route: route.abort())
+    
     await asyncio.sleep(2.85 + 1.5 * random.random())
     await utils.detect_reCAPTCHA(page)
     
@@ -62,6 +67,10 @@ async def google_search_scrape(contexts, index, query, company):
 
 #Scrape company info from crunchbase, needs a crunchbase link
 async def scrape_crunchbase_dateLatestFunding(page, scrape_link):
+    # Block expensive resources before navigation
+    await page.route("**/*.{png,jpg,jpeg,gif,webp,pdf,mp4,webm,mp3,wav}", lambda route: route.abort())
+    await page.route("**/*{analytics,advertising,doubleclick,tracking}*", lambda route: route.abort())
+    
     print("Scrape Date of latest funding")
     financials_url = scrape_link + '/company_financials'
     await page.goto(financials_url)
