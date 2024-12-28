@@ -71,16 +71,52 @@ async def detect_reCAPTCHA(page):
         play_alert_sound()
         print("reCAPTCHA detected. Please complete the CAPTCHA manually.")
 
-def get_queries(row_data):
-    # Queries stored in a dictionary
-    queries = {
-        "linkedin": f"site:linkedin.com/in/ {row_data['Startup']}, {row_data['HQ Location (World)']},founder, co-founder, co founder, ceo",
-        "crunchbase": f"site:crunchbase.com {row_data['Startup']}",
-    }
+def find_blank_cells(table, column_mapping, column_idx, worksheet_start, worksheet_end):
+    """
+    Find blank cells in a specific column within a given row range.
+    
+    Args:
+        table: List of dictionaries containing worksheet data
+        column_mapping: Dictionary mapping column names to indices
+        column_idx: The column index to check for blank cells
+        start_row: Starting row number (inclusive)
+        end_row: Ending row number (exclusive)
+    
+    Returns:
+        List of [row_number, column_idx, try_number] for blank cells
+    """
+    blank_cells = []
 
-    # Scrape packages stored in a list of dictionaries
-    scrape_packages = [
-        {"name": "linkedin", "query": queries["linkedin"], "link": ""},
-        {"name": "crunchbase", "query": queries["crunchbase"], "link": ""}
-    ]
-    return {"Queries": queries, "Scrape packages": scrape_packages}
+    column_name = next(key for key, value in column_mapping.items() if value == column_idx)
+    
+    for i in range(worksheet_start, worksheet_end):
+        actual_row = table[i-2]  # Convert back to table row number
+        actual_row_num = i
+        
+        # Check if the column exists and handle None values
+        cell_value = actual_row.get(column_name)
+        if cell_value is None or (isinstance(cell_value, str) and cell_value.strip() == ""):
+            blank_cells.append([actual_row_num, column_idx, cell_value])
+            
+    return blank_cells
+
+def extract_profile(url: str) -> str:
+    """
+    Extracts the company profile name from a Crunchbase URL.
+    
+    Args:
+        url (str): The Crunchbase URL
+        
+    Returns:
+        str: The company profile name (last part of the URL)
+        
+    Example:
+        >>> extract_profile("https://www.crunchbase.com/organization/elythea", "crunchbase")
+        'elythea'
+    """
+    # Remove any trailing whitespace and split by '/'
+    clean_url = url.strip()
+    parts = clean_url.split('/')
+    
+    # Return the last non-empty part
+    return parts[-1].strip()

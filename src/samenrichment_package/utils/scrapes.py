@@ -11,15 +11,23 @@ from playwright.async_api import async_playwright
 import asyncio
 import os
 import json
+from curl_cffi import requests
+from bs4 import BeautifulSoup
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-CRUNCHBASE_DIR = os.path.join(current_dir, '.json', 'crunchbase')
+CRUNCHBASE_HTML_DIR = os.path.join(current_dir, 'html', 'crunchbase')
+CRUNCHBASE_JSON_DIR = os.path.join(current_dir, 'json', 'crunchbase')
 
+
+"""
+Function to get links from google search
+"""
 async def google_search_scrape(contexts, query, company):
     """
     Performs a Google search for the given query using Playwright.
     Returns the first search result link if found.
     """
+
     page = await contexts[random.randint(0,len(contexts)-1)].new_page()
     
     # Block expensive resources
@@ -29,7 +37,7 @@ async def google_search_scrape(contexts, query, company):
     await asyncio.sleep(2.85 + 1.5 * random.random())
     await utils.detect_reCAPTCHA(page)
     
-    print("Scraping Google Search")
+    print("\n\nScraping Google Search")
     link_result = ""
 
     # 30% chance to scroll randomly
@@ -47,25 +55,35 @@ async def google_search_scrape(contexts, query, company):
     search_url = f"https://www.google.com/search{search_param}{search_query}"
 
     try:
-        await page.goto(search_url)
+        await page.goto(
+            search_url, 
+            timeout=60000,
+            wait_until="domcontentloaded"  # Less strict than 'load'
+        )
         print("LLEGAMOS***********************")
         link_locator = page.locator(f'a:has-text("{company}")')
-        # Ensure at least one result exists
-        if await link_locator.count() > 0:
-            # Get the href attribute of the first result
+        
+        try:
+            await link_locator.first.wait_for(timeout=10000)
             href_value = await link_locator.first.get_attribute('href')
             print(f"Found LinkedIn link: {href_value}")
             link_result = href_value
-        else: 
+            return link_result
+        except:
             print(f"No results found for query: {query}")
+            return None
 
     except Exception as e:
         print(f"Failed scrape in query: {query}, Error: {e}")
-    
+        return None
     finally:
-        return link_result
-    
-async def company_info_crunchbase(contexts, query, crunchbase_profile):
+        await page.close()
+
+
+"""
+Functions to get data from crunchbase
+"""
+async def get_html(contexts, link):
     """
     Scrapes entire html of company info from crunchbase.
     Stores in a json file.
@@ -94,130 +112,58 @@ async def company_info_crunchbase(contexts, query, crunchbase_profile):
         await page.evaluate(f"window.scrollTo(0, {scroll_position})")
         await page.wait_for_timeout(500 + random.randint(0, 500))
 
-    # Randomly choose a search parameter
-    search_params = ["?q=", "?query=", "?search="]
-    search_param = random.choice(search_params)
-
-    # Format Crunchbase's company profile API URL
-    search_url = f'https://www.crunchbase.com/v4/data/entities/organizations/{crunchbase_profile}?field_ids=%5B%22identifier%22,%22layout_id%22,%22facet_ids%22,%22title%22,%22short_description%22,%22is_locked%22%5D&layout_mode=view_v2'
-
     try:
-        await page.goto(search_url)
+        await page.goto(link)
         print("LLEGAMOS***********************")
         content = await page.content()
         print(content[:100])  # Only print first 100 characters
-        
-        # Save JSON content to file
-        try:
-            json_content = json.loads(content)
-            os.makedirs(CRUNCHBASE_DIR, exist_ok=True)  # Create directory if it doesn't exist
-            file_path = os.path.join(CRUNCHBASE_DIR, f'{crunchbase_profile}.json')
-            with open(file_path, 'w') as f:
-                json.dump(json_content, f, indent=2)
-            preview = json.dumps(json_content, indent=2)[:100]
-            print(f"Content saved to: {file_path}")
-            print("Content preview:")
-            print(preview + "...")
-        except json.JSONDecodeError:
-            print("Content is not valid JSON. First 500 characters:")
-            print(content[:500] + "...")
-            return content   
-    except Exception as e:
-        print(f"Failed scrape in query: {query}, Error: {e}")    
         return content
-    finally:
-        return content
-    
-
-
-#Scrape company info from crunchbase, needs a crunchbase link
-async def scrape_crunchbase_dateLatestFunding(page, scrape_link):
-    # Block expensive resources before navigation
-    await page.route("**/*.{png,jpg,jpeg,gif,webp,pdf,mp4,webm,mp3,wav}", lambda route: route.abort())
-    await page.route("**/*{analytics,advertising,doubleclick,tracking}*", lambda route: route.abort())
-    
-    print("Scrape Date of latest funding")
-    financials_url = scrape_link + '/company_financials'
-    await page.goto(financials_url)
-    
-    # Add random delay after page load
-    await asyncio.sleep(0.4 + 0.5 * random.random())
-
-    # Simulate human-like scrolling
-    scroll_height = random.randint(100, 300)
-    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
-
-    # Define all CSS selectors
-    selectors = [
-        '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > phrase-list-card:nth-child(1) > obfuscation > markup-block > field-formatter:nth-child(10) > a',
-        '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > div > obfuscation-cta > phrase-list-card:nth-child(1) > obfuscation > obfuscation-cta > markup-block > field-formatter:nth-child(12) > a',
-        '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > phrase-list-card:nth-child(1) > obfuscation > markup-block > field-formatter:nth-child(8) > a',
-        '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(2) > profile-section > section-card > mat-card > div.section-content-wrapper > phrase-list-card:nth-child(1) > obfuscation > markup-block > field-formatter:nth-child(10) > a'
-    ]
-
-    funding_date = ""
-    for selector in selectors:
-        try:
-            funding_date = await page.locator(
-            selector
-            ).inner_text()
-            if funding_date:  # If we found a date, break the loop
-                break
-        except:
-            continue
-
-    print(funding_date)
-    return funding_date
-
-async def scrape_crunchbase_description(page, scrape_link):
-    print("Description")
-    description = ""
-    await page.goto(scrape_link)
-
-    # Add random delay after page load
-    await asyncio.sleep(0.4 + 0.5 * random.random())
-
-    # Simulate human-like scrolling
-    scroll_height = random.randint(100, 300)
-    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
-
-    # Extract the description
-    try:
-        description = await page.locator(
-            '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > description-card > div > span'
-        ).inner_text()
-        print(description)
     except Exception as e:
-        print(f"Error extracting description: {e}")
-    finally:
+        print(f"Failed scrape in company: {link}, Error: {e}")    
+        return None
 
-        return description
+def json_from_html_crunchbase_summary(html_content):
+    """Extract the embedded JSON data from the HTML content"""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Find script tags containing the JSON data
+    scripts = soup.find_all('script')
+    
+    for script in scripts:
+        script_text = script.string
+        if script_text and '"properties":' in script_text:
+            try:
+                # Find the start of the JSON object
+                start_idx = script_text.find('{"properties":')
+                if start_idx == -1:
+                    continue
+                    
+                # Find matching closing brace
+                brace_count = 0
+                for i, char in enumerate(script_text[start_idx:]):
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            end_idx = start_idx + i + 1
+                            json_str = script_text[start_idx:end_idx]
+                            return json.loads(json_str)
+                            
+            except (json.JSONDecodeError, ValueError) as e:
+                print(f"Error parsing JSON: {e}")
+                continue
+                
+    return None
 
-async def scrape_crunchbase_stage(page, scrape_link):
-    print("Stage")
-    stage = ""
-    await page.goto(scrape_link)
 
-    # Add random delay after page load
-    await asyncio.sleep(0.4 + 0.5 * random.random())
 
-    # Simulate human-like scrolling
-    scroll_height = random.randint(100, 300)
-    await page.evaluate(f"window.scrollTo(0, {scroll_height})")
+"""
+Function to get specific values from crunchbase
+"""
 
-    # Extract the description
-    try:
-        stage = await page.locator(
-            '#mat-tab-nav-panel-0 > div > full-profile > page-centered-layout.overview-divider.ng-star-inserted > div > row-card > div > div:nth-child(1) > profile-section > section-card > mat-card > div.section-content-wrapper > fields-card > ul > li:nth-child(3) > label-with-icon > span > field-formatter > a'
-        ).inner_text()
-        print(stage)
-    except Exception as e:
-        print(f"Error extracting description: {e}")
-    finally:
-        return stage
 
-        
-def get_crunchbase_value(crunchbase_profile, key_to_find):
+def get_crunchbase_company_value(crunchbase_profile, key_to_find):
     """
     Retrieves a value from a Crunchbase JSON file by its key.
     
@@ -229,7 +175,7 @@ def get_crunchbase_value(crunchbase_profile, key_to_find):
         The value associated with the key if found, None otherwise
     """
     try:
-        file_path = os.path.join(CRUNCHBASE_DIR, f'{crunchbase_profile}.json')
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{crunchbase_profile}.json')
         
         if not os.path.exists(file_path):
             print(f"File not found: {file_path}")
@@ -267,4 +213,266 @@ def get_crunchbase_value(crunchbase_profile, key_to_find):
     except Exception as e:
         print(f"Error reading file: {e}")
         return None
+
+def get_location_from_json(company_profile):
+    """
+    Gets location information from a company's JSON file.
+    
+    Args:
+        company_profile (str): The profile ID/name of the company
+    
+    Returns:
+        str: Formatted location string (City, Region, Country) or empty string if not found
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
         
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return ""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Add this debug line
+        print(f"JSON structure for {company_profile}:", json.dumps(json_data, indent=2)[:500])
+        
+        # Navigate to location_identifiers in the JSON
+        location_identifiers = json_data["cards"]["company_about_fields2"]["location_identifiers"]
+        print(f"location_identifiers: {location_identifiers[:500]}")
+
+        # Initialize variables
+        city = region = country = None
+        
+        # Find the correct values by location_type
+        for location in location_identifiers:   
+            if location["location_type"] == "city":
+                city = location["value"]
+            elif location["location_type"] == "region":
+                region = location["value"]
+            elif location["location_type"] == "country":
+                country = location["value"]
+        
+        # Check if we found all components
+        if city and region and country:
+            return f"{city}, {region}, {country}"
+        else:
+            return ""
+            
+    except (KeyError, IndexError, json.JSONDecodeError):
+        print(f"Error processing JSON for company: {company_profile}")
+        return ""
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return ""
+    
+
+
+def get_founded_date_from_json(company_profile):
+    """
+    Retrieves the founded date from a Crunchbase JSON file.
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return ""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Add this debug line
+        print(f"JSON structure for {company_profile}:", json.dumps(json_data, indent=2)[:500])
+
+        # First, let's try to find the founded_on field using a recursive search
+        def find_founded_on(obj):
+            if isinstance(obj, dict):
+                if "founded_on" in obj:
+                    return obj["founded_on"].get("value") if isinstance(obj["founded_on"], dict) else obj["founded_on"]
+                for value in obj.values():
+                    result = find_founded_on(value)
+                    if result:
+                        return result
+            elif isinstance(obj, list):
+                for item in obj:
+                    result = find_founded_on(item)
+                    if result:
+                        return result
+            return None
+
+        founded_on = find_founded_on(json_data)
+        if founded_on:
+            return founded_on
+        else:
+            print("Founded date not found in JSON structure")
+            return None
+
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return None
+
+
+def get_founder_name_from_json(company_profile):
+    """
+    Retrieves the Founder's name from a Crunchbase JSON file.
+    If no Founder is found, returns the earliest employee's name.
+    
+    Args:
+        company_profile (str): The profile ID/name of the company
+    
+    Returns:
+        str: Founder's or earliest employee's name if found, empty string otherwise
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return "",""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Find the current_employees_featured_order_field section
+        employees = json_data.get("cards", {}).get("current_employees_featured_order_field", [])
+        
+        if not employees:
+            print(f"No employees found for company: {company_profile}")
+            return "",""
+
+        # First try to find CEO
+        for employee in employees:
+            title = employee.get("title", "").upper()
+            if "CEO" in title:
+                person_identifier = employee.get("person_identifier", {})
+                return person_identifier.get("value", ""), "CEO"
+        
+        # If no CEO found, return the first employee in the list
+        first_employee = employees[0]
+        person_identifier = first_employee.get("person_identifier", {})
+        earliest_name = person_identifier.get("value", "")
+        
+        if earliest_name:
+            print(f"No CEO found, returning earliest employee: {earliest_name}")
+        else:
+            print(f"No valid employee name found for company: {company_profile}")
+            
+        return earliest_name, "Unknown"
+            
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return "",""
+
+def get_last_funding_type_from_json(company_profile):
+    """
+    Retrieves the last funding type from a Crunchbase JSON file.
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return ""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Add this debug line
+        print(f"JSON structure for {company_profile}:", json.dumps(json_data, indent=2)[:500])
+
+        # First, let's try to find the last_funding_type field using a recursive search
+        def find_last_funding_type(obj):
+            if isinstance(obj, dict):
+                if "last_funding_type" in obj:
+                    return obj["last_funding_type"].get("value") if isinstance(obj["last_funding_type"], dict) else obj["last_funding_type"]
+                for value in obj.values():
+                    result = find_last_funding_type(value)
+                    if result:
+                        return result
+            elif isinstance(obj, list):
+                for item in obj:
+                    result = find_last_funding_type(item)
+                    if result:
+                        return result
+            return None
+
+        last_funding_type = find_last_funding_type(json_data)
+        if last_funding_type:
+            return last_funding_type
+        else:
+            print("Last funding type not found in JSON structure")
+            return None
+
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return None
+    
+
+def get_last_funding_at_from_json(company_profile):
+    """
+    Retrieves the last funding type from a Crunchbase JSON file.
+    """
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return ""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Add this debug line
+        print(f"JSON structure for {company_profile}:", json.dumps(json_data, indent=2)[:500])
+
+        # First, let's try to find the last_funding_type field using a recursive search
+        def find_last_funding_at(obj):
+            if isinstance(obj, dict):
+                if "last_funding_at" in obj:
+                    return obj["last_funding_at"].get("value") if isinstance(obj["last_funding_at"], dict) else obj["last_funding_at"]
+                for value in obj.values():
+                    result = find_last_funding_at(value)
+                    if result:
+                        return result
+            elif isinstance(obj, list):
+                for item in obj:
+                    result = find_last_funding_at(item)
+                    if result:
+                        return result
+            return None
+
+        last_funding_at = find_last_funding_at(json_data)
+        if last_funding_at:
+            return last_funding_at
+        else:
+            print("Last funding at not found in JSON structure")
+            return None
+
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return None
+
+def get_investments_list_from_json(company_profile):
+    try:
+        file_path = os.path.join(CRUNCHBASE_JSON_DIR, f'{company_profile}.json')
+        
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return ""
+            
+        with open(file_path, 'r') as f:
+            json_data = json.load(f)
+            
+        # Add this debug line
+        print(f"JSON structure for {company_profile}:", json.dumps(json_data, indent=2)[:500])
+
+        investment_list = json_data["cards"]["investments_list"] if "investments_list" in json_data["cards"] else []
+        print(f"Investment list: {investment_list[:100]}")
+
+        orgs_investment_list = [investment.get("organization_identifier", {}).get("value", "") for investment in investment_list]
+        print(f"Orgs investment list: {orgs_investment_list}")
+        return orgs_investment_list
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return ""
